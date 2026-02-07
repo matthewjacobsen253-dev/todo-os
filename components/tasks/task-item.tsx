@@ -35,6 +35,7 @@ export function TaskItem({ task, onClick, onStatusChange }: TaskItemProps) {
       onClick={onClick}
       role="button"
       tabIndex={0}
+      aria-label={`Open task: ${task.title}`}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();

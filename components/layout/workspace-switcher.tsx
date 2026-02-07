@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { ChevronDown, Plus, Building2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useWorkspaceStore } from "@/lib/store/workspace";
+import { useToast } from "@/components/ui/toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,6 +26,7 @@ export function WorkspaceSwitcher() {
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const { currentWorkspace, setCurrentWorkspace } = useWorkspaceStore();
+  const { addToast } = useToast();
 
   useEffect(() => {
     loadWorkspaces();
@@ -41,7 +43,7 @@ export function WorkspaceSwitcher() {
         .order("created_at", { ascending: true });
 
       if (error) {
-        console.error("Error loading workspaces:", error);
+        addToast("Failed to load workspaces", "error");
         return;
       }
 
@@ -51,8 +53,8 @@ export function WorkspaceSwitcher() {
       if (!currentWorkspace && data && data.length > 0) {
         setCurrentWorkspace(data[0]);
       }
-    } catch (err) {
-      console.error("Error loading workspaces:", err);
+    } catch {
+      addToast("Failed to load workspaces", "error");
     } finally {
       setIsLoading(false);
     }
@@ -76,7 +78,10 @@ export function WorkspaceSwitcher() {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-700 transition text-left group">
+          <button
+            aria-label="Switch workspace"
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-700 transition text-left group"
+          >
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
               <Building2 className="w-4 h-4 text-white" />
             </div>

@@ -113,8 +113,7 @@ export function WorkspaceCreateDialog({
         name: workspaceData.name,
         slug: workspaceData.slug,
       });
-    } catch (err) {
-      console.error(err);
+    } catch {
       setError("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);

@@ -24,6 +24,7 @@ import { QuickCaptureDialog } from "@/components/tasks/quick-capture-dialog";
 import { useUI, useUIActions, useReviewQueue } from "@/store";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useProjectsWithSync } from "@/hooks/useProjects";
+import { useToast } from "@/components/ui/toast";
 
 interface NavItem {
   label: string;
@@ -44,6 +45,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const { toggleQuickCapture, toggleCommandPalette } = useUIActions();
   const { projects } = useProjectsWithSync();
   const { count: reviewCount } = useReviewQueue();
+  const { addToast } = useToast();
 
   // Register keyboard shortcuts
   useKeyboardShortcuts();
@@ -88,8 +90,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         setIsAuthenticated(false);
         router.push("/auth/login");
       }
-    } catch (err) {
-      console.error("Error checking auth:", err);
+    } catch {
       setIsAuthenticated(false);
       router.push("/auth/login");
     }
@@ -105,8 +106,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         .is("completed_at", null);
 
       setUnreadCount(count || 0);
-    } catch (err) {
-      console.error("Error loading unread count:", err);
+    } catch {
+      addToast("Could not load task count", "warning");
     }
   };
 
@@ -116,8 +117,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       await supabase.auth.signOut();
       router.push("/auth/login");
       router.refresh();
-    } catch (err) {
-      console.error("Error logging out:", err);
+    } catch {
+      addToast("Failed to log out. Please try again.", "error");
     }
   };
 
@@ -135,6 +136,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background flex">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-4 focus:left-4 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg focus:text-sm focus:font-medium"
+      >
+        Skip to main content
+      </a>
+
       {/* Sidebar */}
       <aside
         className={`bg-card border-r transition-all duration-300 ${
@@ -144,6 +152,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         <div className="p-4 space-y-4 flex-1 flex flex-col">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
+            aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
             className="hidden md:flex items-center justify-end w-full h-10 hover:bg-muted rounded-lg transition text-muted-foreground hover:text-foreground"
           >
             {sidebarOpen ? (
@@ -249,13 +258,14 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             {isMobile && (
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
+                aria-label="Toggle navigation menu"
                 className="text-muted-foreground hover:text-foreground transition md:hidden"
               >
                 <Menu className="w-6 h-6" />
               </button>
             )}
 
-            <div className="flex-1 max-w-md mx-auto px-6">
+            <div className="flex-1 max-w-md mx-auto px-4 md:px-6">
               <button
                 onClick={toggleCommandPalette}
                 className="w-full flex items-center gap-2 pl-10 pr-4 py-2 bg-muted border rounded-lg text-muted-foreground text-sm text-left relative hover:bg-muted/80 transition"
@@ -269,20 +279,24 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             </div>
 
             <div className="flex items-center gap-4">
-              <button className="text-muted-foreground hover:text-foreground transition p-2">
+              <button
+                aria-label="Notifications"
+                className="text-muted-foreground hover:text-foreground transition p-2"
+              >
                 <Bell className="w-5 h-5" />
               </button>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 overflow-auto p-6">
+        <main id="main-content" className="flex-1 overflow-auto p-6">
           <div className="max-w-7xl mx-auto">{children}</div>
         </main>
 
         <button
           onClick={toggleQuickCapture}
-          className="fixed bottom-8 right-8 md:bottom-10 md:right-10 w-14 h-14 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition flex items-center justify-center group"
+          aria-label="Create new task"
+          className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 md:bottom-10 md:right-10 w-14 h-14 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition flex items-center justify-center group"
         >
           <Plus className="w-6 h-6 group-hover:scale-110 transition" />
         </button>

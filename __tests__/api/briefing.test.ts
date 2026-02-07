@@ -407,4 +407,122 @@ describe("Briefing API Routes", () => {
       expect(data.error).toBe("Briefing not found");
     });
   });
+
+  describe("Error handling (try-catch)", () => {
+    it("GET /api/briefing returns 500 when createClient throws", async () => {
+      const { createClient } = await import("@/lib/supabase/server");
+      vi.mocked(createClient).mockRejectedValueOnce(new Error("DB down"));
+
+      const { GET } = await import("@/app/api/briefing/route");
+      const request = new Request(
+        "http://localhost/api/briefing?workspace_id=ws-1",
+      );
+      const response = await GET(
+        request as unknown as import("next/server").NextRequest,
+      );
+      const data = await response.json();
+
+      expect(response.status).toBe(500);
+      expect(data.error).toBe("DB down");
+    });
+
+    it("POST /api/briefing/generate returns 500 when createClient throws", async () => {
+      const { createClient } = await import("@/lib/supabase/server");
+      vi.mocked(createClient).mockRejectedValueOnce(
+        new Error("Connection failed"),
+      );
+
+      const { POST } = await import("@/app/api/briefing/generate/route");
+      const request = new Request("http://localhost/api/briefing/generate", {
+        method: "POST",
+        body: JSON.stringify({ workspace_id: "ws-1" }),
+        headers: { "Content-Type": "application/json" },
+      });
+      const response = await POST(
+        request as unknown as import("next/server").NextRequest,
+      );
+      const data = await response.json();
+
+      expect(response.status).toBe(500);
+      expect(data.error).toBe("Connection failed");
+    });
+
+    it("GET /api/briefing/history returns 500 when createClient throws", async () => {
+      const { createClient } = await import("@/lib/supabase/server");
+      vi.mocked(createClient).mockRejectedValueOnce(new Error("Timeout"));
+
+      const { GET } = await import("@/app/api/briefing/history/route");
+      const request = new Request(
+        "http://localhost/api/briefing/history?workspace_id=ws-1",
+      );
+      const response = await GET(
+        request as unknown as import("next/server").NextRequest,
+      );
+      const data = await response.json();
+
+      expect(response.status).toBe(500);
+      expect(data.error).toBe("Timeout");
+    });
+
+    it("GET /api/briefing/[id] returns 500 when createClient throws", async () => {
+      const { createClient } = await import("@/lib/supabase/server");
+      vi.mocked(createClient).mockRejectedValueOnce(new Error("Network error"));
+
+      const { GET } = await import("@/app/api/briefing/[id]/route");
+      const request = new Request("http://localhost/api/briefing/b-1");
+      const response = await GET(
+        request as unknown as import("next/server").NextRequest,
+        { params: Promise.resolve({ id: "b-1" }) },
+      );
+      const data = await response.json();
+
+      expect(response.status).toBe(500);
+      expect(data.error).toBe("Network error");
+    });
+
+    it("POST /api/briefing/[id]/feedback returns 500 when createClient throws", async () => {
+      const { createClient } = await import("@/lib/supabase/server");
+      vi.mocked(createClient).mockRejectedValueOnce(new Error("Auth failed"));
+
+      const { POST } = await import("@/app/api/briefing/[id]/feedback/route");
+      const request = new Request(
+        "http://localhost/api/briefing/b-1/feedback",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            workspace_id: "ws-1",
+            feedback: "thumbs_up",
+          }),
+          headers: { "Content-Type": "application/json" },
+        },
+      );
+      const response = await POST(
+        request as unknown as import("next/server").NextRequest,
+        { params: Promise.resolve({ id: "b-1" }) },
+      );
+      const data = await response.json();
+
+      expect(response.status).toBe(500);
+      expect(data.error).toBe("Auth failed");
+    });
+
+    it("GET /api/briefing/preferences returns 500 when createClient throws", async () => {
+      const { createClient } = await import("@/lib/supabase/server");
+      vi.mocked(createClient).mockRejectedValueOnce(
+        new Error("Service unavailable"),
+      );
+
+      const { GET } = await import("@/app/api/briefing/preferences/route");
+      const request = new Request(
+        "http://localhost/api/briefing/preferences?workspace_id=ws-1",
+      );
+      const response = await GET(
+        request as unknown as import("next/server").NextRequest,
+      );
+      const data = await response.json();
+
+      expect(response.status).toBe(500);
+      expect(data.error).toBe("Service unavailable");
+    });
+  });
 });

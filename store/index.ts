@@ -73,8 +73,10 @@ interface BriefingState {
   briefingGenerating: boolean;
   briefingHistory: Briefing[];
   briefingHistoryLoading: boolean;
+  briefingHistoryError: string | null;
   briefingPreferences: BriefingPreference | null;
   briefingPreferencesLoading: boolean;
+  briefingPreferencesError: string | null;
 
   fetchBriefing: (workspaceId: string, userId: string) => Promise<void>;
   setBriefing: (briefing: Briefing | null) => void;
@@ -536,8 +538,10 @@ export const useStore = create<AppState>()(
     briefingGenerating: false,
     briefingHistory: [],
     briefingHistoryLoading: false,
+    briefingHistoryError: null,
     briefingPreferences: null,
     briefingPreferencesLoading: false,
+    briefingPreferencesError: null,
 
     fetchBriefing: async (workspaceId: string, userId: string) => {
       set((state) => {
@@ -644,6 +648,7 @@ export const useStore = create<AppState>()(
     fetchBriefingHistory: async (workspaceId: string) => {
       set((state) => {
         state.briefingHistoryLoading = true;
+        state.briefingHistoryError = null;
       });
 
       try {
@@ -658,9 +663,14 @@ export const useStore = create<AppState>()(
           state.briefingHistory = json.data || [];
           state.briefingHistoryLoading = false;
         });
-      } catch {
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Failed to fetch briefing history";
         set((state) => {
           state.briefingHistoryLoading = false;
+          state.briefingHistoryError = message;
         });
       }
     },
@@ -668,6 +678,7 @@ export const useStore = create<AppState>()(
     fetchBriefingPreferences: async (workspaceId: string) => {
       set((state) => {
         state.briefingPreferencesLoading = true;
+        state.briefingPreferencesError = null;
       });
 
       try {
@@ -682,9 +693,14 @@ export const useStore = create<AppState>()(
           state.briefingPreferences = json.data || null;
           state.briefingPreferencesLoading = false;
         });
-      } catch {
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Failed to fetch briefing preferences";
         set((state) => {
           state.briefingPreferencesLoading = false;
+          state.briefingPreferencesError = message;
         });
       }
     },
@@ -1027,3 +1043,9 @@ export const useReviewActions = () =>
     approveTask: state.approveTask,
     rejectTask: state.rejectTask,
   }));
+
+export const useBriefingHistoryError = () =>
+  useStore((state) => state.briefingHistoryError);
+
+export const useBriefingPreferencesError = () =>
+  useStore((state) => state.briefingPreferencesError);

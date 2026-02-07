@@ -241,6 +241,15 @@ export const SearchCommand: React.FC<SearchCommandProps> = ({
               onKeyDown={handleKeyDown}
               className="border-0 shadow-none focus-visible:ring-0 text-base"
               autoFocus
+              role="combobox"
+              aria-expanded={searchResults.length > 0 || !searchQuery}
+              aria-activedescendant={
+                searchQuery && searchResults.length > 0
+                  ? `search-result-${selectedIndex}`
+                  : !searchQuery
+                    ? `quick-action-${selectedIndex}`
+                    : undefined
+              }
             />
           </div>
 
@@ -251,10 +260,13 @@ export const SearchCommand: React.FC<SearchCommandProps> = ({
                 <p className="px-2 py-1.5 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Quick Actions
                 </p>
-                <div className="space-y-1">
+                <div className="space-y-1" role="listbox">
                   {quickActions.map((action, idx) => (
                     <button
                       key={action.id}
+                      id={`quick-action-${idx}`}
+                      role="option"
+                      aria-selected={selectedIndex === idx}
                       onClick={() => handleSelect(action)}
                       className={cn(
                         "w-full text-left px-2 py-2 rounded-md hover:bg-muted transition-colors flex items-center justify-between",
@@ -301,10 +313,13 @@ export const SearchCommand: React.FC<SearchCommandProps> = ({
                 <p className="px-2 py-1.5 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Search Results
                 </p>
-                <div className="space-y-1">
+                <div className="space-y-1" role="listbox">
                   {searchResults.map((result, idx) => (
                     <button
                       key={result.id}
+                      id={`search-result-${idx}`}
+                      role="option"
+                      aria-selected={selectedIndex === idx}
                       onClick={() => handleSelect(result)}
                       className={cn(
                         "w-full text-left px-2 py-2 rounded-md hover:bg-muted transition-colors flex items-center gap-3",
