@@ -23,6 +23,7 @@ import { SearchCommand } from "@/components/layout/search-command";
 import { QuickCaptureDialog } from "@/components/tasks/quick-capture-dialog";
 import { useUI, useUIActions } from "@/store";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { useProjectsWithSync } from "@/hooks/useProjects";
 
 interface NavItem {
   label: string;
@@ -41,6 +42,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   const { quickCaptureOpen, commandPaletteOpen } = useUI();
   const { toggleQuickCapture, toggleCommandPalette } = useUIActions();
+  const { projects } = useProjectsWithSync();
 
   // Register keyboard shortcuts
   useKeyboardShortcuts();
@@ -173,6 +175,36 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               );
             })}
           </nav>
+
+          {/* Project links */}
+          {sidebarOpen && projects.length > 0 && (
+            <div className="space-y-1">
+              <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Projects
+              </p>
+              {projects.slice(0, 5).map((project) => (
+                <Link
+                  key={project.id}
+                  href={`/projects/${project.id}`}
+                  className="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted transition text-muted-foreground hover:text-foreground"
+                >
+                  <span
+                    className="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0"
+                    style={{ backgroundColor: project.color }}
+                  />
+                  <span className="text-sm truncate">{project.name}</span>
+                </Link>
+              ))}
+              {projects.length > 5 && (
+                <Link
+                  href="/projects"
+                  className="block px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground transition"
+                >
+                  View all ({projects.length})
+                </Link>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="p-4 border-t space-y-2">

@@ -6,18 +6,29 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { TaskPrioritySelect } from "./task-priority-select";
-import type { CreateTaskInput, TaskPriority } from "@/types";
+import { ProjectSelect } from "@/components/projects/project-select";
+import type { CreateTaskInput, TaskPriority, Project } from "@/types";
 
 interface TaskCreateFormProps {
   onSubmit: (input: CreateTaskInput) => Promise<void>;
   onCancel?: () => void;
+  projects?: Project[];
+  defaultProjectId?: string | null;
 }
 
-export function TaskCreateForm({ onSubmit, onCancel }: TaskCreateFormProps) {
+export function TaskCreateForm({
+  onSubmit,
+  onCancel,
+  projects,
+  defaultProjectId,
+}: TaskCreateFormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<TaskPriority>("none");
   const [dueDate, setDueDate] = useState("");
+  const [projectId, setProjectId] = useState<string | null>(
+    defaultProjectId ?? null,
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,12 +48,14 @@ export function TaskCreateForm({ onSubmit, onCancel }: TaskCreateFormProps) {
         description: description.trim() || undefined,
         priority,
         due_date: dueDate || null,
+        project_id: projectId,
       });
       // Reset form on success
       setTitle("");
       setDescription("");
       setPriority("none");
       setDueDate("");
+      setProjectId(defaultProjectId ?? null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create task");
     } finally {
@@ -90,6 +103,17 @@ export function TaskCreateForm({ onSubmit, onCancel }: TaskCreateFormProps) {
           />
         </div>
       </div>
+
+      {projects && projects.length > 0 && (
+        <div className="space-y-2">
+          <Label>Project</Label>
+          <ProjectSelect
+            projects={projects}
+            value={projectId}
+            onChange={setProjectId}
+          />
+        </div>
+      )}
 
       {error && <p className="text-sm text-destructive">{error}</p>}
 

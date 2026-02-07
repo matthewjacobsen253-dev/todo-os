@@ -5,10 +5,12 @@ import {
   formatDistance,
   isToday,
   isYesterday,
+  isBefore,
+  startOfDay,
   parseISO,
 } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
-import type { TaskPriority, TaskStatus } from "@/types";
+import type { Task, TaskPriority, TaskStatus } from "@/types";
 
 export const cn = (...inputs: ClassValue[]): string => {
   return twMerge(clsx(inputs));
@@ -98,7 +100,7 @@ export const slugify = (str: string): string => {
 
 export const debounce = <T extends (...args: unknown[]) => unknown>(
   fn: T,
-  ms: number
+  ms: number,
 ): ((...args: Parameters<T>) => void) => {
   let timeoutId: ReturnType<typeof setTimeout>;
 
@@ -138,7 +140,7 @@ export const isValidEmail = (email: string): boolean => {
 
 export const groupBy = <T extends Record<string, unknown>>(
   array: T[],
-  key: keyof T
+  key: keyof T,
 ): Record<string, T[]> => {
   return array.reduce(
     (groups, item) => {
@@ -149,13 +151,13 @@ export const groupBy = <T extends Record<string, unknown>>(
       groups[groupKey].push(item);
       return groups;
     },
-    {} as Record<string, T[]>
+    {} as Record<string, T[]>,
   );
 };
 
 export const deduplicate = <T extends Record<string, unknown>>(
   array: T[],
-  key: keyof T
+  key: keyof T,
 ): T[] => {
   const seen = new Set();
   return array.filter((item) => {
@@ -177,25 +179,83 @@ export const sortByStatus = <T extends { status: TaskStatus }>(
     "waiting",
     "done",
     "cancelled",
-  ]
+  ],
 ): T[] => {
   return [...tasks].sort(
-    (a, b) => statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status)
+    (a, b) => statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status),
   );
 };
 
 export const sortByPriority = <T extends { priority: TaskPriority }>(
   tasks: T[],
-  priorityOrder: TaskPriority[] = [
+  priorityOrder: TaskPriority[] = ["urgent", "high", "medium", "low", "none"],
+): T[] => {
+  return [...tasks].sort(
+    (a, b) =>
+      priorityOrder.indexOf(a.priority) - priorityOrder.indexOf(b.priority),
+  );
+};
+
+export const categorizeTodayTasks = (
+  tasks: Task[],
+): {
+  overdue: Task[];
+  dueToday: Task[];
+  completedToday: Task[];
+} => {
+  const today = startOfDay(new Date());
+  const terminalStatuses: TaskStatus[] = ["done", "cancelled"];
+
+  const overdue: Task[] = [];
+  const dueToday: Task[] = [];
+  const completedToday: Task[] = [];
+
+  for (const task of tasks) {
+    // Check if completed today
+    if (task.completed_at) {
+      try {
+        const completedDate = parseISO(task.completed_at);
+        if (isToday(completedDate)) {
+          completedToday.push(task);
+          continue;
+        }
+      } catch {
+        // invalid date, skip
+      }
+    }
+
+    // Skip terminal-status tasks for overdue/dueToday
+    if (terminalStatuses.includes(task.status)) continue;
+
+    if (task.due_date) {
+      try {
+        const dueDate = startOfDay(parseISO(task.due_date));
+        if (isBefore(dueDate, today)) {
+          overdue.push(task);
+        } else if (isToday(dueDate)) {
+          dueToday.push(task);
+        }
+      } catch {
+        // invalid date, skip
+      }
+    }
+  }
+
+  // Sort overdue by due_date ascending
+  overdue.sort((a, b) => (a.due_date || "").localeCompare(b.due_date || ""));
+
+  // Sort dueToday by priority
+  const priorityOrder: TaskPriority[] = [
     "urgent",
     "high",
     "medium",
     "low",
     "none",
-  ]
-): T[] => {
-  return [...tasks].sort(
+  ];
+  dueToday.sort(
     (a, b) =>
-      priorityOrder.indexOf(a.priority) - priorityOrder.indexOf(b.priority)
+      priorityOrder.indexOf(a.priority) - priorityOrder.indexOf(b.priority),
   );
+
+  return { overdue, dueToday, completedToday };
 };

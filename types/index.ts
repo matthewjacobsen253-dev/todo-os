@@ -424,6 +424,17 @@ export interface CreateProjectInput {
 }
 
 /**
+ * Project update form
+ */
+export interface UpdateProjectInput {
+  name?: string;
+  color?: string;
+  icon?: string;
+  description?: string;
+  status?: ProjectStatus;
+}
+
+/**
  * Workspace creation form
  */
 export interface CreateWorkspaceInput {

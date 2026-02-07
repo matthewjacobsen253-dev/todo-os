@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { TaskCreateForm } from "./task-create-form";
 import { useTasksWithSync } from "@/hooks/useTasks";
+import { useProjectsWithSync } from "@/hooks/useProjects";
 import { useCurrentWorkspace } from "@/store";
 import type { CreateTaskInput } from "@/types";
 
@@ -21,6 +22,7 @@ export function QuickCaptureDialog({
   onOpenChange,
 }: QuickCaptureDialogProps) {
   const { createTask } = useTasksWithSync();
+  const { projects } = useProjectsWithSync();
   const currentWorkspace = useCurrentWorkspace();
 
   const handleSubmit = async (input: CreateTaskInput) => {
@@ -40,6 +42,7 @@ export function QuickCaptureDialog({
         <TaskCreateForm
           onSubmit={handleSubmit}
           onCancel={() => onOpenChange(false)}
+          projects={projects}
         />
       </DialogContent>
     </Dialog>

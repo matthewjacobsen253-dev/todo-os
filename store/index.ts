@@ -8,6 +8,9 @@ import type {
   WorkspaceRole,
   Briefing,
   Notification,
+  Project,
+  CreateProjectInput,
+  UpdateProjectInput,
 } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 
@@ -37,7 +40,11 @@ interface TaskState {
   clearFilters: () => void;
   fetchTasks: (workspaceId: string) => Promise<void>;
   createTask: (workspaceId: string, task: Task) => Promise<Task>;
-  updateTask: (workspaceId: string, taskId: string, updates: Partial<Task>) => Promise<void>;
+  updateTask: (
+    workspaceId: string,
+    taskId: string,
+    updates: Partial<Task>,
+  ) => Promise<void>;
   deleteTask: (workspaceId: string, taskId: string) => Promise<void>;
 }
 
@@ -66,6 +73,24 @@ interface BriefingState {
   setBriefing: (briefing: Briefing | null) => void;
 }
 
+interface ProjectState {
+  projects: Project[];
+  projectsLoading: boolean;
+  projectsError: string | null;
+
+  fetchProjects: (workspaceId: string) => Promise<void>;
+  createProject: (
+    workspaceId: string,
+    input: CreateProjectInput,
+  ) => Promise<Project>;
+  updateProject: (
+    workspaceId: string,
+    projectId: string,
+    updates: UpdateProjectInput,
+  ) => Promise<void>;
+  deleteProject: (workspaceId: string, projectId: string) => Promise<void>;
+}
+
 interface NotificationState {
   notifications: Notification[];
   unreadCount: number;
@@ -77,7 +102,14 @@ interface NotificationState {
   addNotification: (notification: Notification) => void;
 }
 
-interface AppState extends WorkspaceState, TaskState, UIState, BriefingState, NotificationState {}
+interface AppState
+  extends
+    WorkspaceState,
+    TaskState,
+    ProjectState,
+    UIState,
+    BriefingState,
+    NotificationState {}
 
 // ============================================================================
 // STORE CREATION
@@ -118,14 +150,19 @@ export const useStore = create<AppState>()(
 
         if (error) throw error;
 
-        const workspacesWithRole = (workspaceData || []).map((item: unknown) => {
-          const typedItem = item as { workspace: Workspace; role: WorkspaceRole };
-          return {
-            ...typedItem.workspace,
-            role: typedItem.role,
-            member_count: 1,
-          };
-        });
+        const workspacesWithRole = (workspaceData || []).map(
+          (item: unknown) => {
+            const typedItem = item as {
+              workspace: Workspace;
+              role: WorkspaceRole;
+            };
+            return {
+              ...typedItem.workspace,
+              role: typedItem.role,
+              member_count: 1,
+            };
+          },
+        );
 
         set((state) => {
           state.workspaces = workspacesWithRole;
@@ -133,7 +170,10 @@ export const useStore = create<AppState>()(
         });
       } catch (error) {
         set((state) => {
-          state.workspaceError = error instanceof Error ? error.message : "Failed to fetch workspaces";
+          state.workspaceError =
+            error instanceof Error
+              ? error.message
+              : "Failed to fetch workspaces";
           state.workspaceLoading = false;
         });
       }
@@ -180,7 +220,10 @@ export const useStore = create<AppState>()(
       set((state) => {
         const combinedFilters = { ...state.filters, ...newFilters };
         state.filters = combinedFilters;
-        state.filteredTasks = filterTasks(state.tasks as Task[], combinedFilters);
+        state.filteredTasks = filterTasks(
+          state.tasks as Task[],
+          combinedFilters,
+        );
       });
     },
 
@@ -216,7 +259,8 @@ export const useStore = create<AppState>()(
         });
       } catch (error) {
         set((state) => {
-          state.tasksError = error instanceof Error ? error.message : "Failed to fetch tasks";
+          state.tasksError =
+            error instanceof Error ? error.message : "Failed to fetch tasks";
           state.tasksLoading = false;
         });
       }
@@ -235,13 +279,20 @@ export const useStore = create<AppState>()(
 
       set((state) => {
         state.tasks.push(data);
-        state.filteredTasks = filterTasks([...(state.tasks as Task[]), data], state.filters);
+        state.filteredTasks = filterTasks(
+          [...(state.tasks as Task[]), data],
+          state.filters,
+        );
       });
 
       return data;
     },
 
-    updateTask: async (workspaceId: string, taskId: string, updates: Partial<Task>) => {
+    updateTask: async (
+      workspaceId: string,
+      taskId: string,
+      updates: Partial<Task>,
+    ) => {
       const supabase = createClient();
 
       const { error } = await supabase
@@ -256,7 +307,10 @@ export const useStore = create<AppState>()(
         const index = state.tasks.findIndex((t: Task) => t.id === taskId);
         if (index >= 0) {
           state.tasks[index] = { ...state.tasks[index], ...updates };
-          state.filteredTasks = filterTasks(state.tasks as Task[], state.filters);
+          state.filteredTasks = filterTasks(
+            state.tasks as Task[],
+            state.filters,
+          );
         }
       });
     },
@@ -274,7 +328,119 @@ export const useStore = create<AppState>()(
 
       set((state) => {
         state.tasks = state.tasks.filter((t: Task) => t.id !== taskId);
-        state.filteredTasks = state.filteredTasks.filter((t: Task) => t.id !== taskId);
+        state.filteredTasks = state.filteredTasks.filter(
+          (t: Task) => t.id !== taskId,
+        );
+      });
+    },
+
+    // PROJECT SLICE
+    projects: [],
+    projectsLoading: false,
+    projectsError: null,
+
+    fetchProjects: async (workspaceId: string) => {
+      set((state) => {
+        state.projectsLoading = true;
+        state.projectsError = null;
+      });
+
+      try {
+        const supabase = createClient();
+        const { data, error } = await supabase
+          .from("projects")
+          .select("*")
+          .eq("workspace_id", workspaceId)
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        set((state) => {
+          state.projects = (data || []) as Project[];
+          state.projectsLoading = false;
+        });
+      } catch (error) {
+        set((state) => {
+          state.projectsError =
+            error instanceof Error ? error.message : "Failed to fetch projects";
+          state.projectsLoading = false;
+        });
+      }
+    },
+
+    createProject: async (workspaceId: string, input: CreateProjectInput) => {
+      const supabase = createClient();
+      const { data: authData } = await supabase.auth.getSession();
+
+      if (!authData?.session?.user?.id) {
+        throw new Error("Not authenticated");
+      }
+
+      const { data, error } = await supabase
+        .from("projects")
+        .insert([
+          {
+            workspace_id: workspaceId,
+            name: input.name,
+            color: input.color || "#6366f1",
+            icon: input.icon || "folder",
+            description: input.description || null,
+            status: "active",
+          },
+        ])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      const project = data as Project;
+      set((state) => {
+        state.projects.unshift(project);
+      });
+
+      return project;
+    },
+
+    updateProject: async (
+      workspaceId: string,
+      projectId: string,
+      updates: UpdateProjectInput,
+    ) => {
+      const supabase = createClient();
+
+      const { error } = await supabase
+        .from("projects")
+        .update(updates)
+        .eq("id", projectId)
+        .eq("workspace_id", workspaceId);
+
+      if (error) throw error;
+
+      set((state) => {
+        const index = state.projects.findIndex(
+          (p: Project) => p.id === projectId,
+        );
+        if (index >= 0) {
+          state.projects[index] = { ...state.projects[index], ...updates };
+        }
+      });
+    },
+
+    deleteProject: async (workspaceId: string, projectId: string) => {
+      const supabase = createClient();
+
+      const { error } = await supabase
+        .from("projects")
+        .delete()
+        .eq("id", projectId)
+        .eq("workspace_id", workspaceId);
+
+      if (error) throw error;
+
+      set((state) => {
+        state.projects = state.projects.filter(
+          (p: Project) => p.id !== projectId,
+        );
       });
     },
 
@@ -287,7 +453,9 @@ export const useStore = create<AppState>()(
     commandPaletteOpen: false,
 
     toggleSidebar: () => {
-      set((state) => { state.sidebarOpen = !state.sidebarOpen; });
+      set((state) => {
+        state.sidebarOpen = !state.sidebarOpen;
+      });
     },
 
     openTaskDetail: (taskId: string) => {
@@ -305,18 +473,24 @@ export const useStore = create<AppState>()(
     },
 
     toggleQuickCapture: () => {
-      set((state) => { state.quickCaptureOpen = !state.quickCaptureOpen; });
+      set((state) => {
+        state.quickCaptureOpen = !state.quickCaptureOpen;
+      });
     },
 
     setTheme: (theme: "light" | "dark" | "system") => {
-      set((state) => { state.theme = theme; });
+      set((state) => {
+        state.theme = theme;
+      });
       if (typeof window !== "undefined") {
         localStorage.setItem("theme", theme);
       }
     },
 
     toggleCommandPalette: () => {
-      set((state) => { state.commandPaletteOpen = !state.commandPaletteOpen; });
+      set((state) => {
+        state.commandPaletteOpen = !state.commandPaletteOpen;
+      });
     },
 
     // BRIEFING SLICE
@@ -352,14 +526,17 @@ export const useStore = create<AppState>()(
         });
       } catch (error) {
         set((state) => {
-          state.briefingError = error instanceof Error ? error.message : "Failed to fetch briefing";
+          state.briefingError =
+            error instanceof Error ? error.message : "Failed to fetch briefing";
           state.briefingLoading = false;
         });
       }
     },
 
     setBriefing: (briefing: Briefing | null) => {
-      set((state) => { state.todayBriefing = briefing; });
+      set((state) => {
+        state.todayBriefing = briefing;
+      });
     },
 
     // NOTIFICATION SLICE
@@ -368,7 +545,9 @@ export const useStore = create<AppState>()(
     notificationsLoading: false,
 
     fetchNotifications: async (workspaceId: string, userId: string) => {
-      set((state) => { state.notificationsLoading = true; });
+      set((state) => {
+        state.notificationsLoading = true;
+      });
 
       try {
         const supabase = createClient();
@@ -382,7 +561,9 @@ export const useStore = create<AppState>()(
         if (error) throw error;
 
         const typedData = (data || []) as Notification[];
-        const unreadCount = typedData.filter((n: Notification) => !n.read).length;
+        const unreadCount = typedData.filter(
+          (n: Notification) => !n.read,
+        ).length;
 
         set((state) => {
           state.notifications = typedData;
@@ -390,16 +571,23 @@ export const useStore = create<AppState>()(
           state.notificationsLoading = false;
         });
       } catch {
-        set((state) => { state.notificationsLoading = false; });
+        set((state) => {
+          state.notificationsLoading = false;
+        });
       }
     },
 
     markRead: async (notificationId: string) => {
       const supabase = createClient();
-      await supabase.from("notifications").update({ read: true }).eq("id", notificationId);
+      await supabase
+        .from("notifications")
+        .update({ read: true })
+        .eq("id", notificationId);
 
       set((state) => {
-        const notification = state.notifications.find((n: Notification) => n.id === notificationId);
+        const notification = state.notifications.find(
+          (n: Notification) => n.id === notificationId,
+        );
         if (notification && !notification.read) {
           notification.read = true;
           state.unreadCount = Math.max(0, state.unreadCount - 1);
@@ -417,7 +605,9 @@ export const useStore = create<AppState>()(
         .eq("read", false);
 
       set((state) => {
-        state.notifications.forEach((n: Notification) => { n.read = true; });
+        state.notifications.forEach((n: Notification) => {
+          n.read = true;
+        });
         state.unreadCount = 0;
       });
     },
@@ -430,7 +620,7 @@ export const useStore = create<AppState>()(
         }
       });
     },
-  }))
+  })),
 );
 
 // ============================================================================
@@ -456,7 +646,9 @@ function filterTasks(tasks: Task[], filters: TaskFilters): Task[] {
       if (!task.title.toLowerCase().includes(searchLower)) return false;
     }
     if (filters.tags && filters.tags.length > 0) {
-      const hasTags = filters.tags.some((tag: string) => task.tags.includes(tag));
+      const hasTags = filters.tags.some((tag: string) =>
+        task.tags.includes(tag),
+      );
       if (!hasTags) return false;
     }
     return true;
@@ -467,7 +659,8 @@ function filterTasks(tasks: Task[], filters: TaskFilters): Task[] {
 // HOOKS FOR EASIER USE
 // ============================================================================
 
-export const useCurrentWorkspace = () => useStore((state) => state.currentWorkspace);
+export const useCurrentWorkspace = () =>
+  useStore((state) => state.currentWorkspace);
 
 export const useWorkspaceActions = () =>
   useStore((state) => ({
@@ -533,6 +726,21 @@ export const useNotifications = () =>
     notifications: state.notifications,
     unreadCount: state.unreadCount,
     loading: state.notificationsLoading,
+  }));
+
+export const useProjects = () =>
+  useStore((state) => ({
+    projects: state.projects,
+    loading: state.projectsLoading,
+    error: state.projectsError,
+  }));
+
+export const useProjectActions = () =>
+  useStore((state) => ({
+    fetchProjects: state.fetchProjects,
+    createProject: state.createProject,
+    updateProject: state.updateProject,
+    deleteProject: state.deleteProject,
   }));
 
 export const useNotificationActions = () =>

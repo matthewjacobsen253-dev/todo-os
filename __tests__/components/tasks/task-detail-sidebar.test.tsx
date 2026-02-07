@@ -50,6 +50,18 @@ vi.mock("@/hooks/useTasks", () => ({
   }),
 }));
 
+vi.mock("@/hooks/useProjects", () => ({
+  useProjectsWithSync: () => ({
+    projects: [],
+    loading: false,
+    error: null,
+    createProject: vi.fn(),
+    updateProject: vi.fn(),
+    deleteProject: vi.fn(),
+  }),
+  useProject: () => undefined,
+}));
+
 vi.mock("@/store", () => ({
   useCurrentWorkspace: () => ({ id: "ws-1", name: "Test Workspace" }),
   useTasks: () => ({
@@ -66,6 +78,17 @@ vi.mock("@/store", () => ({
     createTask: vi.fn(),
     updateTask: vi.fn(),
     deleteTask: vi.fn(),
+  }),
+  useProjects: () => ({
+    projects: [],
+    loading: false,
+    error: null,
+  }),
+  useProjectActions: () => ({
+    fetchProjects: vi.fn(),
+    createProject: vi.fn(),
+    updateProject: vi.fn(),
+    deleteProject: vi.fn(),
   }),
 }));
 

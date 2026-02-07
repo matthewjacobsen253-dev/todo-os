@@ -26,8 +26,10 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { TaskStatusSelect } from "./task-status-select";
 import { TaskPrioritySelect } from "./task-priority-select";
+import { ProjectSelect } from "@/components/projects/project-select";
 import { useTask } from "@/hooks/useTasks";
 import { useTasksWithSync } from "@/hooks/useTasks";
+import { useProjectsWithSync } from "@/hooks/useProjects";
 import { formatDate } from "@/lib/utils";
 import { Trash2 } from "lucide-react";
 import type { TaskStatus, TaskPriority } from "@/types";
@@ -45,6 +47,7 @@ export function TaskDetailSidebar({
 }: TaskDetailSidebarProps) {
   const task = useTask(taskId);
   const { updateTask, deleteTask } = useTasksWithSync();
+  const { projects } = useProjectsWithSync();
   const [editingTitle, setEditingTitle] = useState(false);
   const [titleValue, setTitleValue] = useState("");
   const [descriptionValue, setDescriptionValue] = useState("");
@@ -105,6 +108,10 @@ export function TaskDetailSidebar({
   ) => {
     const value = e.target.value;
     await updateTask(task.id, { due_date: value || null });
+  };
+
+  const handleProjectChange = async (projectId: string | null) => {
+    await updateTask(task.id, { project_id: projectId });
   };
 
   const handleDelete = async () => {
@@ -195,6 +202,18 @@ export function TaskDetailSidebar({
               onChange={handleDueDateChange}
             />
           </div>
+
+          {/* Project */}
+          {projects.length > 0 && (
+            <div className="space-y-2">
+              <Label>Project</Label>
+              <ProjectSelect
+                projects={projects}
+                value={task.project_id}
+                onChange={handleProjectChange}
+              />
+            </div>
+          )}
 
           <Separator />
 

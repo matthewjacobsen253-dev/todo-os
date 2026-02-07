@@ -59,9 +59,37 @@ Sprint 1: Task CRUD, Inbox, Detail Sidebar, Search, Status Transitions (Complete
 - [x] pnpm test:run passes (36/36 tests, 6 test files)
 - [x] pnpm build passes clean
 
-Next Steps (Sprint 2):
-- [ ] Today view with due-date filtering
-- [ ] Projects CRUD and project views
+Sprint 2: Today View + Projects CRUD (Complete)
+- [x] Added UpdateProjectInput type to types/index.ts
+- [x] Added ProjectState slice to store/index.ts (CRUD actions, useProjects/useProjectActions hooks)
+- [x] Created hooks/useProjects.ts (useProjectsWithSync, useProject)
+- [x] Created app/api/projects/route.ts (GET with task counts, POST with validation)
+- [x] Created app/api/projects/[id]/route.ts (GET with stats, PATCH, DELETE with task unassignment)
+- [x] Created components/projects/project-select.tsx (dropdown with color dots)
+- [x] Created components/projects/project-card.tsx (card with progress bar, status badge)
+- [x] Created components/projects/project-list.tsx (grid with loading/empty states)
+- [x] Created components/projects/project-create-dialog.tsx (name, description, color picker)
+- [x] Created components/projects/project-edit-dialog.tsx (pre-filled form with status select)
+- [x] Created components/projects/index.ts barrel exports
+- [x] Enhanced components/tasks/task-create-form.tsx (optional projects prop + ProjectSelect)
+- [x] Enhanced components/tasks/task-detail-sidebar.tsx (ProjectSelect field)
+- [x] Enhanced components/tasks/quick-capture-dialog.tsx (passes projects to form)
+- [x] Added categorizeTodayTasks helper to lib/utils.ts (overdue, dueToday, completedToday)
+- [x] Replaced app/(dashboard)/today/page.tsx stub with full Today view (3 sections, collapsible completed)
+- [x] Replaced app/(dashboard)/projects/page.tsx stub with full project list page
+- [x] Created app/(dashboard)/projects/[id]/page.tsx (project detail with scoped task list)
+- [x] Enhanced app/(dashboard)/layout.tsx (project links in sidebar)
+- [x] Created __tests__/components/projects/project-card.test.tsx (7 tests)
+- [x] Created __tests__/components/projects/project-list.test.tsx (4 tests)
+- [x] Created __tests__/components/tasks/task-create-form-projects.test.tsx (4 tests)
+- [x] Created __tests__/api/projects.test.ts (5 tests)
+- [x] Updated __tests__/components/tasks/task-detail-sidebar.test.tsx (added project mocks)
+- [x] pnpm tsc --noEmit passes (0 errors)
+- [x] pnpm lint passes (0 errors, 5 warnings — all pre-existing)
+- [x] pnpm test:run passes (56/56 tests, 10 test files)
+- [x] pnpm build passes clean
+
+Next Steps (Sprint 3):
 - [ ] Review Queue for auto-extracted tasks
 - [ ] Daily Briefing generation and display
 - [ ] Drag-and-drop task reordering
