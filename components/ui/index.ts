@@ -104,7 +104,41 @@ export type { TextareaProps } from "./textarea";
 export { Label } from "./label";
 
 // Popover components
-export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor } from "./popover";
+export {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverAnchor,
+} from "./popover";
 
 // Skeleton component
 export { Skeleton } from "./skeleton";
+
+// Sheet components
+export {
+  Sheet,
+  SheetPortal,
+  SheetOverlay,
+  SheetTrigger,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetFooter,
+  SheetTitle,
+  SheetDescription,
+} from "./sheet";
+
+// AlertDialog components
+export {
+  AlertDialog,
+  AlertDialogPortal,
+  AlertDialogOverlay,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "./alert-dialog";

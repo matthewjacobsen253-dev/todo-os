@@ -1,78 +1,34 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import {
   Plus,
   Inbox,
   Calendar,
   Zap,
   Clock,
-  FolderOpen,
-  Tag,
-  Search,
-  ArrowRight,
   FileText,
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+  Search,
+  Loader2,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useCurrentWorkspace, useUIActions } from "@/store";
 
-interface SearchResult {
+interface SearchResultItem {
   id: string;
-  type: 'task' | 'project' | 'action';
+  type: "task" | "project" | "action";
   title: string;
   description?: string;
-  icon: React.ReactNode;
 }
 
 interface SearchCommandProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  searchResults?: SearchResult[];
-  onSearch?: (query: string) => void;
 }
-
-// Mock data for demo
-const mockResults: SearchResult[] = [
-  {
-    id: '1',
-    type: 'task',
-    title: 'Complete project proposal',
-    description: 'Due today at 5 PM',
-    icon: <FileText className="h-4 w-4" />,
-  },
-  {
-    id: '2',
-    type: 'task',
-    title: 'Review team feedback',
-    description: 'From Sarah Chen',
-    icon: <FileText className="h-4 w-4" />,
-  },
-  {
-    id: '3',
-    type: 'project',
-    title: 'Q1 Planning',
-    description: '8 tasks',
-    icon: <FolderOpen className="h-4 w-4" />,
-  },
-  {
-    id: '4',
-    type: 'project',
-    title: 'Feature Development',
-    description: '15 tasks',
-    icon: <FolderOpen className="h-4 w-4" />,
-  },
-];
-
-const recentSearches = [
-  'urgent tasks',
-  'this week',
-  'project alpha',
-  'team feedback',
-];
 
 const quickActions: Array<{
   id: string;
@@ -83,125 +39,183 @@ const quickActions: Array<{
   action: string;
 }> = [
   {
-    id: '1',
-    title: 'Create New Task',
-    description: 'Add a new task to your inbox',
+    id: "qa-1",
+    title: "Create New Task",
+    description: "Add a new task to your inbox",
     icon: <Plus className="h-4 w-4" />,
-    shortcut: 'Cmd+N',
-    action: '/inbox?new=true',
+    shortcut: "Cmd+N",
+    action: "quick-capture",
   },
   {
-    id: '2',
-    title: 'Go to Inbox',
-    description: 'View all your tasks',
+    id: "qa-2",
+    title: "Go to Inbox",
+    description: "View all your tasks",
     icon: <Inbox className="h-4 w-4" />,
-    action: '/inbox',
+    action: "/inbox",
   },
   {
-    id: '3',
-    title: 'Today View',
-    description: 'See tasks due today',
+    id: "qa-3",
+    title: "Today View",
+    description: "See tasks due today",
     icon: <Calendar className="h-4 w-4" />,
-    action: '/today',
+    action: "/today",
   },
   {
-    id: '4',
-    title: 'Generate Briefing',
-    description: 'Get your daily briefing',
+    id: "qa-4",
+    title: "Generate Briefing",
+    description: "Get your daily briefing",
     icon: <Zap className="h-4 w-4" />,
-    action: '/briefing',
+    action: "/briefing",
   },
   {
-    id: '5',
-    title: 'Review Queue',
-    description: 'Check extracted tasks',
+    id: "qa-5",
+    title: "Review Queue",
+    description: "Check extracted tasks",
     icon: <Clock className="h-4 w-4" />,
-    action: '/review',
+    action: "/review",
   },
 ];
 
 export const SearchCommand: React.FC<SearchCommandProps> = ({
   open = false,
   onOpenChange,
-  searchResults = mockResults,
-  onSearch,
 }) => {
   const [isOpen, setIsOpen] = useState(open);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [displayedResults, setDisplayedResults] = useState<SearchResult[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchResultItem[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const currentWorkspace = useCurrentWorkspace();
+  const { toggleQuickCapture, openTaskDetail } = useUIActions();
 
   useEffect(() => {
     setIsOpen(open);
   }, [open]);
 
+  const handleOpenChange = useCallback(
+    (newOpen: boolean) => {
+      setIsOpen(newOpen);
+      onOpenChange?.(newOpen);
+      if (!newOpen) {
+        setSearchQuery("");
+        setSearchResults([]);
+        setSelectedIndex(0);
+      }
+    },
+    [onOpenChange],
+  );
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
-        setIsOpen(true);
+        handleOpenChange(true);
         setTimeout(() => inputRef.current?.focus(), 100);
       }
-      if (e.key === 'Escape') {
-        setIsOpen(false);
+      if (e.key === "Escape" && isOpen) {
+        handleOpenChange(false);
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, handleOpenChange]);
+
+  // Debounced search
+  const performSearch = useCallback(
+    async (query: string) => {
+      if (!query.trim() || !currentWorkspace?.id) {
+        setSearchResults([]);
+        setIsSearching(false);
+        return;
+      }
+
+      setIsSearching(true);
+      try {
+        const res = await fetch(
+          `/api/tasks/search?q=${encodeURIComponent(query)}&workspace_id=${currentWorkspace.id}`,
+        );
+        if (res.ok) {
+          const data = await res.json();
+          setSearchResults(
+            (data.results || []).map((r: SearchResultItem) => ({
+              ...r,
+              type: r.type || "task",
+            })),
+          );
+        } else {
+          setSearchResults([]);
+        }
+      } catch {
+        setSearchResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    },
+    [currentWorkspace?.id],
+  );
 
   const handleSearch = (value: string) => {
     setSearchQuery(value);
     setSelectedIndex(0);
 
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+
     if (!value.trim()) {
-      setDisplayedResults([]);
+      setSearchResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+    debounceRef.current = setTimeout(() => {
+      performSearch(value);
+    }, 300);
+  };
+
+  const handleSelect = (item: SearchResultItem | (typeof quickActions)[0]) => {
+    if ("action" in item) {
+      if (item.action === "quick-capture") {
+        handleOpenChange(false);
+        toggleQuickCapture();
+      } else {
+        router.push(item.action);
+        handleOpenChange(false);
+      }
     } else {
-      onSearch?.(value);
-      // Mock filtering
-      const filtered = searchResults.filter((result) =>
-        result.title.toLowerCase().includes(value.toLowerCase())
-      );
-      setDisplayedResults(filtered);
+      // Open task detail sidebar
+      openTaskDetail(item.id);
+      router.push("/inbox");
+      handleOpenChange(false);
     }
   };
 
-  const handleSelect = (result: SearchResult | (typeof quickActions)[0]) => {
-    if ('action' in result) {
-      router.push(result.action);
-    } else {
-      router.push(`/tasks/${result.id}`);
+  const getAllItems = () => {
+    if (searchQuery.trim()) {
+      return searchResults;
     }
-    setIsOpen(false);
-    setSearchQuery('');
-  };
-
-  const handleNavigate = (direction: 'up' | 'down') => {
-    const allItems = [
-      ...displayedResults,
-      ...quickActions,
-    ];
-
-    if (direction === 'down') {
-      setSelectedIndex((prev) => (prev + 1) % allItems.length);
-    } else {
-      setSelectedIndex((prev) => (prev - 1 + allItems.length) % allItems.length);
-    }
+    return [];
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'ArrowDown') {
+    const allItems = [
+      ...getAllItems(),
+      ...(!searchQuery.trim() ? quickActions : []),
+    ];
+
+    if (e.key === "ArrowDown") {
       e.preventDefault();
-      handleNavigate('down');
-    } else if (e.key === 'ArrowUp') {
+      setSelectedIndex((prev) => (prev + 1) % Math.max(allItems.length, 1));
+    } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      handleNavigate('up');
-    } else if (e.key === 'Enter') {
+      setSelectedIndex(
+        (prev) => (prev - 1 + allItems.length) % Math.max(allItems.length, 1),
+      );
+    } else if (e.key === "Enter") {
       e.preventDefault();
-      const allItems = [...displayedResults, ...quickActions];
       if (allItems[selectedIndex]) {
         handleSelect(allItems[selectedIndex]);
       }
@@ -209,12 +223,16 @@ export const SearchCommand: React.FC<SearchCommandProps> = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="overflow-hidden p-0 shadow-lg">
         <div className="flex flex-col h-screen sm:h-auto">
           {/* Search Input */}
           <div className="flex items-center border-b border-border px-4 py-3">
-            <Search className="h-4 w-4 text-muted-foreground mr-3" />
+            {isSearching ? (
+              <Loader2 className="h-4 w-4 text-muted-foreground mr-3 animate-spin" />
+            ) : (
+              <Search className="h-4 w-4 text-muted-foreground mr-3" />
+            )}
             <Input
               ref={inputRef}
               placeholder="Search tasks, projects, or commands..."
@@ -229,71 +247,48 @@ export const SearchCommand: React.FC<SearchCommandProps> = ({
           {/* Results */}
           <div className="overflow-y-auto flex-1">
             {!searchQuery && (
-              <>
-                {/* Quick Actions */}
-                <div className="p-2">
-                  <p className="px-2 py-1.5 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Quick Actions
-                  </p>
-                  <div className="space-y-1">
-                    {quickActions.map((action, idx) => (
-                      <button
-                        key={action.id}
-                        onClick={() => handleSelect(action)}
-                        className={cn(
-                          'w-full text-left px-2 py-2 rounded-md hover:bg-muted transition-colors flex items-center justify-between',
-                          selectedIndex === idx && 'bg-muted'
-                        )}
-                      >
-                        <div className="flex items-center gap-3 flex-1 min-w-0">
-                          <span className="text-muted-foreground flex-shrink-0">
-                            {action.icon}
-                          </span>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-foreground">
-                              {action.title}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {action.description}
-                            </p>
-                          </div>
+              <div className="p-2">
+                <p className="px-2 py-1.5 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  Quick Actions
+                </p>
+                <div className="space-y-1">
+                  {quickActions.map((action, idx) => (
+                    <button
+                      key={action.id}
+                      onClick={() => handleSelect(action)}
+                      className={cn(
+                        "w-full text-left px-2 py-2 rounded-md hover:bg-muted transition-colors flex items-center justify-between",
+                        selectedIndex === idx && "bg-muted",
+                      )}
+                    >
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <span className="text-muted-foreground flex-shrink-0">
+                          {action.icon}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-foreground">
+                            {action.title}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {action.description}
+                          </p>
                         </div>
-                        {action.shortcut && (
-                          <Badge variant="secondary" className="text-xs ml-2 flex-shrink-0">
-                            {action.shortcut}
-                          </Badge>
-                        )}
-                      </button>
-                    ))}
-                  </div>
+                      </div>
+                      {action.shortcut && (
+                        <Badge
+                          variant="secondary"
+                          className="text-xs ml-2 flex-shrink-0"
+                        >
+                          {action.shortcut}
+                        </Badge>
+                      )}
+                    </button>
+                  ))}
                 </div>
-
-                {/* Recent Searches */}
-                <div className="p-2 border-t border-border">
-                  <p className="px-2 py-1.5 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Recent Searches
-                  </p>
-                  <div className="space-y-1">
-                    {recentSearches.map((search, idx) => (
-                      <button
-                        key={search}
-                        onClick={() => handleSearch(search)}
-                        className={cn(
-                          'w-full text-left px-2 py-2 rounded-md hover:bg-muted transition-colors flex items-center gap-3',
-                          selectedIndex === quickActions.length + idx && 'bg-muted'
-                        )}
-                      >
-                        <Clock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                        <span className="text-sm text-foreground">{search}</span>
-                        <ArrowRight className="h-3 w-3 text-muted-foreground ml-auto flex-shrink-0 opacity-0 group-hover:opacity-100" />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </>
+              </div>
             )}
 
-            {searchQuery && displayedResults.length === 0 && (
+            {searchQuery && !isSearching && searchResults.length === 0 && (
               <div className="p-8 text-center">
                 <p className="text-sm text-muted-foreground">
                   No results found for &ldquo;{searchQuery}&rdquo;
@@ -301,35 +296,38 @@ export const SearchCommand: React.FC<SearchCommandProps> = ({
               </div>
             )}
 
-            {searchQuery && displayedResults.length > 0 && (
+            {searchQuery && searchResults.length > 0 && (
               <div className="p-2">
                 <p className="px-2 py-1.5 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Search Results
                 </p>
                 <div className="space-y-1">
-                  {displayedResults.map((result, idx) => (
+                  {searchResults.map((result, idx) => (
                     <button
                       key={result.id}
                       onClick={() => handleSelect(result)}
                       className={cn(
-                        'w-full text-left px-2 py-2 rounded-md hover:bg-muted transition-colors flex items-center gap-3',
-                        selectedIndex === idx && 'bg-muted'
+                        "w-full text-left px-2 py-2 rounded-md hover:bg-muted transition-colors flex items-center gap-3",
+                        selectedIndex === idx && "bg-muted",
                       )}
                     >
                       <span className="text-muted-foreground flex-shrink-0">
-                        {result.icon}
+                        <FileText className="h-4 w-4" />
                       </span>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-foreground line-clamp-1">
                           {result.title}
                         </p>
                         {result.description && (
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-xs text-muted-foreground line-clamp-1">
                             {result.description}
                           </p>
                         )}
                       </div>
-                      <Badge variant="secondary" className="text-xs capitalize flex-shrink-0">
+                      <Badge
+                        variant="secondary"
+                        className="text-xs capitalize flex-shrink-0"
+                      >
                         {result.type}
                       </Badge>
                     </button>
@@ -345,19 +343,19 @@ export const SearchCommand: React.FC<SearchCommandProps> = ({
               <span>
                 <kbd className="px-1.5 py-0.5 rounded bg-background border border-border">
                   ↓↑
-                </kbd>{' '}
+                </kbd>{" "}
                 Navigate
               </span>
               <span>
                 <kbd className="px-1.5 py-0.5 rounded bg-background border border-border">
                   ↵
-                </kbd>{' '}
+                </kbd>{" "}
                 Select
               </span>
               <span>
                 <kbd className="px-1.5 py-0.5 rounded bg-background border border-border">
                   Esc
-                </kbd>{' '}
+                </kbd>{" "}
                 Close
               </span>
             </div>

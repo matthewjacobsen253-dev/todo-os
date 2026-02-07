@@ -1,37 +1,70 @@
 Ultimate To-Do OS Project Progress Tracker
 ============================================
 
-Sprint 0: Foundation (In Progress)
+Sprint 0: Foundation (Complete)
 - [x] Created project from Supabase + Next.js starter template (pnpm)
 - [x] SPEC.md placed in project root (844 lines, 14 sections)
 - [x] CLAUDE.md created with project conventions
 - [x] progress.txt created
 - [x] lessons.md created
 - [x] agent_docs/ created (database_schema.md, email_extraction_pipeline.md, briefing_system.md)
-- [ ] .env.local configured with Supabase credentials
-- [ ] Additional dependencies installed (zustand, date-fns, radix-ui, etc.)
-- [ ] Database migration ported and applied
-- [ ] TypeScript types ported
-- [ ] Supabase client utilities verified
-- [ ] Middleware configured
-- [ ] Auth pages ported
-- [ ] Dashboard layout created
-- [ ] UI components ported
-- [ ] Zustand store ported
-- [ ] Custom hooks ported
-- [ ] Quality gates configured (lefthook, vitest, .claude/settings.json)
-- [ ] Slash commands created (.claude/commands/)
-- [ ] MCP servers configured (.mcp.json)
-- [ ] pnpm build passes clean
-- [ ] pnpm test passes
-- [ ] Pushed to GitHub
+- [x] .env.local configured with Supabase credentials
+- [x] Additional dependencies installed (zustand, date-fns, radix-ui, etc.)
+- [x] Database migration ported and applied (gen_random_uuid, 13 tables with RLS)
+- [x] TypeScript types ported (460 lines, all types)
+- [x] Supabase client utilities verified (template's createClient pattern)
+- [x] Middleware configured (template's proxy.ts for session refresh)
+- [x] Auth pages kept from template (login, signup, forgot-password, reset-password)
+- [x] Dashboard layout created (sidebar, top bar, quick capture)
+- [x] UI components ported (shadcn/ui: avatar, dialog, popover, scroll-area, etc.)
+- [x] Zustand store ported (5 slices, 544 lines)
+- [x] Custom hooks ported (useKeyboardShortcuts, useTasks, useWorkspace)
+- [x] Quality gates configured (lefthook, vitest, .claude/settings.json)
+- [x] Slash commands created (.claude/commands/)
+- [x] MCP servers configured (.mcp.json)
+- [x] pnpm build passes clean
+- [x] pnpm test passes (7/7 smoke tests)
+- [x] pnpm tsc --noEmit passes (0 errors)
+- [x] pnpm lint passes (0 errors, 8 warnings)
+- [x] Pushed to GitHub (matthewjacobsen253-dev/todo-os)
 
-Next Steps (Sprint 1):
-- [ ] Task CRUD API routes
-- [ ] Inbox view
-- [ ] Task detail sidebar
-- [ ] Task search
-- [ ] Status transitions
+Sprint 1: Task CRUD, Inbox, Detail Sidebar, Search, Status Transitions (Complete)
+- [x] Installed @radix-ui/react-alert-dialog dependency
+- [x] Created components/ui/sheet.tsx (slide-out panel using Radix Dialog)
+- [x] Created components/ui/alert-dialog.tsx (confirmation dialog)
+- [x] Updated components/ui/index.ts barrel exports
+- [x] Created components/tasks/task-status-select.tsx (6 statuses with colored badges)
+- [x] Created components/tasks/task-priority-select.tsx (5 priorities with colored badges)
+- [x] Created components/tasks/task-item.tsx (row with checkbox, title, priority, due date, status)
+- [x] Created components/tasks/task-list.tsx (with loading skeleton and empty states)
+- [x] Created components/tasks/task-filters.tsx (debounced search, priority filter, clear)
+- [x] Created components/tasks/task-create-form.tsx (title, description, priority, due date)
+- [x] Created components/tasks/quick-capture-dialog.tsx (dialog wrapping create form)
+- [x] Created components/tasks/task-detail-sidebar.tsx (Sheet with editable fields, delete with AlertDialog)
+- [x] Created components/tasks/index.ts barrel exports
+- [x] Created app/api/tasks/route.ts (GET with pagination/status filter, POST with defaults)
+- [x] Created app/api/tasks/[id]/route.ts (GET, PATCH with completed_at logic, DELETE)
+- [x] Created app/api/tasks/search/route.ts (RPC with ilike fallback, 20 result limit)
+- [x] Replaced app/(dashboard)/inbox/page.tsx stub with full implementation
+- [x] Updated app/(dashboard)/layout.tsx (wired QuickCaptureDialog, SearchCommand, keyboard shortcuts, FAB)
+- [x] Updated components/layout/search-command.tsx (real API search with debounce, loading spinner)
+- [x] Installed @testing-library/user-event
+- [x] Created __tests__/components/tasks/task-item.test.tsx (8 tests)
+- [x] Created __tests__/components/tasks/task-list.test.tsx (4 tests)
+- [x] Created __tests__/components/tasks/task-create-form.test.tsx (6 tests)
+- [x] Created __tests__/components/tasks/task-detail-sidebar.test.tsx (4 tests)
+- [x] Created __tests__/api/tasks.test.ts (7 tests)
+- [x] pnpm tsc --noEmit passes (0 errors)
+- [x] pnpm lint passes (0 errors, 5 warnings — all pre-existing)
+- [x] pnpm test:run passes (36/36 tests, 6 test files)
+- [x] pnpm build passes clean
+
+Next Steps (Sprint 2):
+- [ ] Today view with due-date filtering
+- [ ] Projects CRUD and project views
+- [ ] Review Queue for auto-extracted tasks
+- [ ] Daily Briefing generation and display
+- [ ] Drag-and-drop task reordering
 
 Notes:
 - Project scaffolded from official Supabase starter template (with-supabase)
