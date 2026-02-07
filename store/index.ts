@@ -7,10 +7,12 @@ import type {
   WorkspaceWithRole,
   WorkspaceRole,
   Briefing,
+  BriefingPreference,
   Notification,
   Project,
   CreateProjectInput,
   UpdateProjectInput,
+  ReviewQueueItem,
 } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 
@@ -68,9 +70,27 @@ interface BriefingState {
   todayBriefing: Briefing | null;
   briefingLoading: boolean;
   briefingError: string | null;
+  briefingGenerating: boolean;
+  briefingHistory: Briefing[];
+  briefingHistoryLoading: boolean;
+  briefingPreferences: BriefingPreference | null;
+  briefingPreferencesLoading: boolean;
 
   fetchBriefing: (workspaceId: string, userId: string) => Promise<void>;
   setBriefing: (briefing: Briefing | null) => void;
+  generateBriefing: (workspaceId: string) => Promise<Briefing>;
+  submitFeedback: (
+    briefingId: string,
+    workspaceId: string,
+    feedback: "thumbs_up" | "thumbs_down",
+    notes?: string,
+  ) => Promise<void>;
+  fetchBriefingHistory: (workspaceId: string) => Promise<void>;
+  fetchBriefingPreferences: (workspaceId: string) => Promise<void>;
+  updateBriefingPreferences: (
+    workspaceId: string,
+    updates: Partial<BriefingPreference>,
+  ) => Promise<void>;
 }
 
 interface ProjectState {
@@ -102,6 +122,21 @@ interface NotificationState {
   addNotification: (notification: Notification) => void;
 }
 
+interface ReviewState {
+  reviewQueue: ReviewQueueItem[];
+  reviewLoading: boolean;
+  reviewError: string | null;
+  reviewCount: number;
+
+  fetchReviewQueue: (workspaceId: string) => Promise<void>;
+  approveTask: (
+    workspaceId: string,
+    taskId: string,
+    edits?: Record<string, unknown>,
+  ) => Promise<void>;
+  rejectTask: (workspaceId: string, taskId: string) => Promise<void>;
+}
+
 interface AppState
   extends
     WorkspaceState,
@@ -109,7 +144,8 @@ interface AppState
     ProjectState,
     UIState,
     BriefingState,
-    NotificationState {}
+    NotificationState,
+    ReviewState {}
 
 // ============================================================================
 // STORE CREATION
@@ -497,6 +533,11 @@ export const useStore = create<AppState>()(
     todayBriefing: null,
     briefingLoading: false,
     briefingError: null,
+    briefingGenerating: false,
+    briefingHistory: [],
+    briefingHistoryLoading: false,
+    briefingPreferences: null,
+    briefingPreferencesLoading: false,
 
     fetchBriefing: async (workspaceId: string, userId: string) => {
       set((state) => {
@@ -536,6 +577,133 @@ export const useStore = create<AppState>()(
     setBriefing: (briefing: Briefing | null) => {
       set((state) => {
         state.todayBriefing = briefing;
+      });
+    },
+
+    generateBriefing: async (workspaceId: string) => {
+      set((state) => {
+        state.briefingGenerating = true;
+        state.briefingError = null;
+      });
+
+      try {
+        const response = await fetch("/api/briefing/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ workspace_id: workspaceId }),
+        });
+
+        const json = await response.json();
+        if (!response.ok) throw new Error(json.error);
+
+        set((state) => {
+          state.todayBriefing = json.data;
+          state.briefingGenerating = false;
+        });
+
+        return json.data;
+      } catch (error) {
+        set((state) => {
+          state.briefingError =
+            error instanceof Error
+              ? error.message
+              : "Failed to generate briefing";
+          state.briefingGenerating = false;
+        });
+        throw error;
+      }
+    },
+
+    submitFeedback: async (
+      briefingId: string,
+      workspaceId: string,
+      feedback: "thumbs_up" | "thumbs_down",
+      notes?: string,
+    ) => {
+      const response = await fetch(`/api/briefing/${briefingId}/feedback`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          workspace_id: workspaceId,
+          feedback,
+          feedback_notes: notes,
+        }),
+      });
+
+      const json = await response.json();
+      if (!response.ok) throw new Error(json.error);
+
+      set((state) => {
+        if (state.todayBriefing?.id === briefingId) {
+          state.todayBriefing.feedback = feedback;
+          state.todayBriefing.feedback_notes = notes || null;
+        }
+      });
+    },
+
+    fetchBriefingHistory: async (workspaceId: string) => {
+      set((state) => {
+        state.briefingHistoryLoading = true;
+      });
+
+      try {
+        const response = await fetch(
+          `/api/briefing/history?workspace_id=${workspaceId}`,
+        );
+        const json = await response.json();
+
+        if (!response.ok) throw new Error(json.error);
+
+        set((state) => {
+          state.briefingHistory = json.data || [];
+          state.briefingHistoryLoading = false;
+        });
+      } catch {
+        set((state) => {
+          state.briefingHistoryLoading = false;
+        });
+      }
+    },
+
+    fetchBriefingPreferences: async (workspaceId: string) => {
+      set((state) => {
+        state.briefingPreferencesLoading = true;
+      });
+
+      try {
+        const response = await fetch(
+          `/api/briefing/preferences?workspace_id=${workspaceId}`,
+        );
+        const json = await response.json();
+
+        if (!response.ok) throw new Error(json.error);
+
+        set((state) => {
+          state.briefingPreferences = json.data || null;
+          state.briefingPreferencesLoading = false;
+        });
+      } catch {
+        set((state) => {
+          state.briefingPreferencesLoading = false;
+        });
+      }
+    },
+
+    updateBriefingPreferences: async (
+      workspaceId: string,
+      updates: Partial<BriefingPreference>,
+    ) => {
+      const response = await fetch("/api/briefing/preferences", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workspace_id: workspaceId, ...updates }),
+      });
+
+      const json = await response.json();
+      if (!response.ok) throw new Error(json.error);
+
+      set((state) => {
+        state.briefingPreferences = json.data;
       });
     },
 
@@ -618,6 +786,82 @@ export const useStore = create<AppState>()(
         if (!notification.read) {
           state.unreadCount += 1;
         }
+      });
+    },
+
+    // REVIEW SLICE
+    reviewQueue: [],
+    reviewLoading: false,
+    reviewError: null,
+    reviewCount: 0,
+
+    fetchReviewQueue: async (workspaceId: string) => {
+      set((state) => {
+        state.reviewLoading = true;
+        state.reviewError = null;
+      });
+
+      try {
+        const response = await fetch(
+          `/api/review/queue?workspace_id=${workspaceId}`,
+        );
+        const json = await response.json();
+
+        if (!response.ok) throw new Error(json.error);
+
+        set((state) => {
+          state.reviewQueue = json.data || [];
+          state.reviewCount = json.count || 0;
+          state.reviewLoading = false;
+        });
+      } catch (error) {
+        set((state) => {
+          state.reviewError =
+            error instanceof Error
+              ? error.message
+              : "Failed to fetch review queue";
+          state.reviewLoading = false;
+        });
+      }
+    },
+
+    approveTask: async (
+      workspaceId: string,
+      taskId: string,
+      edits?: Record<string, unknown>,
+    ) => {
+      const response = await fetch(`/api/review/${taskId}/approve`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workspace_id: workspaceId, ...edits }),
+      });
+
+      const json = await response.json();
+      if (!response.ok) throw new Error(json.error);
+
+      set((state) => {
+        state.reviewQueue = state.reviewQueue.filter(
+          (item: ReviewQueueItem) => item.id !== taskId,
+        );
+        state.reviewCount = Math.max(0, state.reviewCount - 1);
+      });
+    },
+
+    rejectTask: async (workspaceId: string, taskId: string) => {
+      const response = await fetch(`/api/review/${taskId}/reject`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workspace_id: workspaceId }),
+      });
+
+      const json = await response.json();
+      if (!response.ok) throw new Error(json.error);
+
+      set((state) => {
+        state.reviewQueue = state.reviewQueue.filter(
+          (item: ReviewQueueItem) => item.id !== taskId,
+        );
+        state.reviewCount = Math.max(0, state.reviewCount - 1);
       });
     },
   })),
@@ -713,12 +957,30 @@ export const useBriefing = () =>
     todayBriefing: state.todayBriefing,
     loading: state.briefingLoading,
     error: state.briefingError,
+    generating: state.briefingGenerating,
   }));
 
 export const useBriefingActions = () =>
   useStore((state) => ({
     fetchBriefing: state.fetchBriefing,
     setBriefing: state.setBriefing,
+    generateBriefing: state.generateBriefing,
+    submitFeedback: state.submitFeedback,
+  }));
+
+export const useBriefingHistory = () =>
+  useStore((state) => ({
+    history: state.briefingHistory,
+    loading: state.briefingHistoryLoading,
+    fetchHistory: state.fetchBriefingHistory,
+  }));
+
+export const useBriefingPreferences = () =>
+  useStore((state) => ({
+    preferences: state.briefingPreferences,
+    loading: state.briefingPreferencesLoading,
+    fetchPreferences: state.fetchBriefingPreferences,
+    updatePreferences: state.updateBriefingPreferences,
   }));
 
 export const useNotifications = () =>
@@ -749,4 +1011,19 @@ export const useNotificationActions = () =>
     markRead: state.markRead,
     markAllRead: state.markAllRead,
     addNotification: state.addNotification,
+  }));
+
+export const useReviewQueue = () =>
+  useStore((state) => ({
+    reviewQueue: state.reviewQueue,
+    loading: state.reviewLoading,
+    error: state.reviewError,
+    count: state.reviewCount,
+  }));
+
+export const useReviewActions = () =>
+  useStore((state) => ({
+    fetchReviewQueue: state.fetchReviewQueue,
+    approveTask: state.approveTask,
+    rejectTask: state.rejectTask,
   }));

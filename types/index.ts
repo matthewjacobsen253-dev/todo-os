@@ -183,6 +183,7 @@ export interface BriefingPreference {
   delivery_time: string;
   timezone: string;
   enabled: boolean;
+  include_email: boolean;
   filters: BriefingFilters;
   created_at: string;
 }
@@ -206,7 +207,8 @@ export interface Briefing {
   user_id: string;
   date: string;
   content: BriefingContent;
-  feedback: BriefingFeedback | null;
+  feedback: "thumbs_up" | "thumbs_down" | null;
+  feedback_notes: string | null;
   created_at: string;
 }
 
@@ -249,7 +251,7 @@ export interface BriefingContent {
 }
 
 /**
- * Feedback on briefing quality
+ * @deprecated feedback is now stored as "thumbs_up" | "thumbs_down" directly on Briefing
  */
 export interface BriefingFeedback {
   helpful: boolean;
@@ -468,4 +470,101 @@ export interface SearchQuery {
     field: keyof Task;
     direction: "asc" | "desc";
   };
+}
+
+// ============================================================================
+// EMAIL INTEGRATION TYPES
+// ============================================================================
+
+/**
+ * Review queue item for email-extracted tasks
+ */
+export interface ReviewQueueItem {
+  id: string;
+  title: string;
+  description: string | null;
+  priority: TaskPriority;
+  due_date: string | null;
+  confidence_score: number;
+  source_type: TaskSourceType;
+  source_email_subject: string | null;
+  source_email_sender: string | null;
+  source_email_date: string | null;
+  review_status: "pending" | "approved" | "rejected";
+  created_at: string;
+}
+
+/**
+ * Email scan log entry
+ */
+export interface EmailScanLog {
+  id: string;
+  config_id: string;
+  workspace_id: string;
+  emails_scanned: number;
+  tasks_extracted: number;
+  tasks_for_review: number;
+  errors: string[];
+  started_at: string;
+  completed_at: string | null;
+  status: "running" | "completed" | "failed";
+}
+
+/**
+ * Email connection status for Settings UI
+ */
+export interface EmailConnectionStatus {
+  connected: boolean;
+  provider: EmailProvider | null;
+  email: string | null;
+  last_scan_at: string | null;
+  enabled: boolean;
+  config_id: string | null;
+}
+
+/**
+ * Form input for updating scan configuration
+ */
+export interface UpdateEmailScanConfigInput {
+  scan_interval_hours?: number;
+  quiet_hours_start?: string | null;
+  quiet_hours_end?: string | null;
+  weekend_scan?: boolean;
+  confidence_threshold?: number;
+  enabled?: boolean;
+}
+
+/**
+ * Claude extraction output shape for a single task
+ */
+export interface ExtractedTaskFromEmail {
+  title: string;
+  description: string | null;
+  priority: TaskPriority;
+  due_date: string | null;
+  confidence_score: number;
+}
+
+/**
+ * Per-email extraction result
+ */
+export interface EmailExtractionResult {
+  email_id: string;
+  email_subject: string;
+  email_sender: string;
+  email_date: string;
+  tasks: ExtractedTaskFromEmail[];
+  error: string | null;
+}
+
+/**
+ * Normalized email message from any provider (Gmail, Outlook)
+ */
+export interface NormalizedEmail {
+  id: string;
+  subject: string;
+  sender: string;
+  date: string;
+  body: string;
+  snippet: string;
 }
