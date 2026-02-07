@@ -1,0 +1,42 @@
+Ultimate To-Do OS Project Progress Tracker
+============================================
+
+Sprint 0: Foundation (In Progress)
+- [x] Created project from Supabase + Next.js starter template (pnpm)
+- [x] SPEC.md placed in project root (844 lines, 14 sections)
+- [x] CLAUDE.md created with project conventions
+- [x] progress.txt created
+- [x] lessons.md created
+- [x] agent_docs/ created (database_schema.md, email_extraction_pipeline.md, briefing_system.md)
+- [ ] .env.local configured with Supabase credentials
+- [ ] Additional dependencies installed (zustand, date-fns, radix-ui, etc.)
+- [ ] Database migration ported and applied
+- [ ] TypeScript types ported
+- [ ] Supabase client utilities verified
+- [ ] Middleware configured
+- [ ] Auth pages ported
+- [ ] Dashboard layout created
+- [ ] UI components ported
+- [ ] Zustand store ported
+- [ ] Custom hooks ported
+- [ ] Quality gates configured (lefthook, vitest, .claude/settings.json)
+- [ ] Slash commands created (.claude/commands/)
+- [ ] MCP servers configured (.mcp.json)
+- [ ] pnpm build passes clean
+- [ ] pnpm test passes
+- [ ] Pushed to GitHub
+
+Next Steps (Sprint 1):
+- [ ] Task CRUD API routes
+- [ ] Inbox view
+- [ ] Task detail sidebar
+- [ ] Task search
+- [ ] Status transitions
+
+Notes:
+- Project scaffolded from official Supabase starter template (with-supabase)
+- Template uses @/* -> ./* path alias (no src/ directory)
+- Template uses NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY env var name
+- Template uses proxy.ts (not middleware.ts) for session refresh
+- Supabase project ref: mzyqdasukuvsriejhblm
+- GitHub repo: matthewjacobsen253-dev/todo-os

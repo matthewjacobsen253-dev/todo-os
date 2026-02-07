@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "command": "pnpm tsc --noEmit 2>&1 | head -20"
+      }
+    ],
+    "Stop": [
+      {
+        "command": "pnpm tsc --noEmit && pnpm test --run"
+      }
+    ]
+  }
+}
