@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { useShallow } from "zustand/react/shallow";
 import { immer } from "zustand/middleware/immer";
 import type {
   Task,
@@ -205,6 +206,10 @@ export const useStore = create<AppState>()(
         set((state) => {
           state.workspaces = workspacesWithRole;
           state.workspaceLoading = false;
+          // Auto-select first workspace if none is selected
+          if (!state.currentWorkspace && workspacesWithRole.length > 0) {
+            state.currentWorkspace = workspacesWithRole[0];
+          }
         });
       } catch (error) {
         set((state) => {
@@ -923,126 +928,156 @@ export const useCurrentWorkspace = () =>
   useStore((state) => state.currentWorkspace);
 
 export const useWorkspaceActions = () =>
-  useStore((state) => ({
-    setCurrentWorkspace: state.setCurrentWorkspace,
-    fetchWorkspaces: state.fetchWorkspaces,
-    createWorkspace: state.createWorkspace,
-  }));
+  useStore(
+    useShallow((state) => ({
+      setCurrentWorkspace: state.setCurrentWorkspace,
+      fetchWorkspaces: state.fetchWorkspaces,
+      createWorkspace: state.createWorkspace,
+    })),
+  );
 
 export const useTasks = () =>
-  useStore((state) => ({
-    tasks: state.tasks,
-    filteredTasks: state.filteredTasks,
-    filters: state.filters,
-    loading: state.tasksLoading,
-    error: state.tasksError,
-  }));
+  useStore(
+    useShallow((state) => ({
+      tasks: state.tasks,
+      filteredTasks: state.filteredTasks,
+      filters: state.filters,
+      loading: state.tasksLoading,
+      error: state.tasksError,
+    })),
+  );
 
 export const useTaskActions = () =>
-  useStore((state) => ({
-    setFilter: state.setFilter,
-    clearFilters: state.clearFilters,
-    fetchTasks: state.fetchTasks,
-    createTask: state.createTask,
-    updateTask: state.updateTask,
-    deleteTask: state.deleteTask,
-  }));
+  useStore(
+    useShallow((state) => ({
+      setFilter: state.setFilter,
+      clearFilters: state.clearFilters,
+      fetchTasks: state.fetchTasks,
+      createTask: state.createTask,
+      updateTask: state.updateTask,
+      deleteTask: state.deleteTask,
+    })),
+  );
 
 export const useUI = () =>
-  useStore((state) => ({
-    sidebarOpen: state.sidebarOpen,
-    taskDetailOpen: state.taskDetailOpen,
-    selectedTaskId: state.selectedTaskId,
-    quickCaptureOpen: state.quickCaptureOpen,
-    theme: state.theme,
-    commandPaletteOpen: state.commandPaletteOpen,
-  }));
+  useStore(
+    useShallow((state) => ({
+      sidebarOpen: state.sidebarOpen,
+      taskDetailOpen: state.taskDetailOpen,
+      selectedTaskId: state.selectedTaskId,
+      quickCaptureOpen: state.quickCaptureOpen,
+      theme: state.theme,
+      commandPaletteOpen: state.commandPaletteOpen,
+    })),
+  );
 
 export const useUIActions = () =>
-  useStore((state) => ({
-    toggleSidebar: state.toggleSidebar,
-    openTaskDetail: state.openTaskDetail,
-    closeTaskDetail: state.closeTaskDetail,
-    toggleQuickCapture: state.toggleQuickCapture,
-    setTheme: state.setTheme,
-    toggleCommandPalette: state.toggleCommandPalette,
-  }));
+  useStore(
+    useShallow((state) => ({
+      toggleSidebar: state.toggleSidebar,
+      openTaskDetail: state.openTaskDetail,
+      closeTaskDetail: state.closeTaskDetail,
+      toggleQuickCapture: state.toggleQuickCapture,
+      setTheme: state.setTheme,
+      toggleCommandPalette: state.toggleCommandPalette,
+    })),
+  );
 
 export const useBriefing = () =>
-  useStore((state) => ({
-    todayBriefing: state.todayBriefing,
-    loading: state.briefingLoading,
-    error: state.briefingError,
-    generating: state.briefingGenerating,
-  }));
+  useStore(
+    useShallow((state) => ({
+      todayBriefing: state.todayBriefing,
+      loading: state.briefingLoading,
+      error: state.briefingError,
+      generating: state.briefingGenerating,
+    })),
+  );
 
 export const useBriefingActions = () =>
-  useStore((state) => ({
-    fetchBriefing: state.fetchBriefing,
-    setBriefing: state.setBriefing,
-    generateBriefing: state.generateBriefing,
-    submitFeedback: state.submitFeedback,
-  }));
+  useStore(
+    useShallow((state) => ({
+      fetchBriefing: state.fetchBriefing,
+      setBriefing: state.setBriefing,
+      generateBriefing: state.generateBriefing,
+      submitFeedback: state.submitFeedback,
+    })),
+  );
 
 export const useBriefingHistory = () =>
-  useStore((state) => ({
-    history: state.briefingHistory,
-    loading: state.briefingHistoryLoading,
-    fetchHistory: state.fetchBriefingHistory,
-  }));
+  useStore(
+    useShallow((state) => ({
+      history: state.briefingHistory,
+      loading: state.briefingHistoryLoading,
+      fetchHistory: state.fetchBriefingHistory,
+    })),
+  );
 
 export const useBriefingPreferences = () =>
-  useStore((state) => ({
-    preferences: state.briefingPreferences,
-    loading: state.briefingPreferencesLoading,
-    fetchPreferences: state.fetchBriefingPreferences,
-    updatePreferences: state.updateBriefingPreferences,
-  }));
+  useStore(
+    useShallow((state) => ({
+      preferences: state.briefingPreferences,
+      loading: state.briefingPreferencesLoading,
+      fetchPreferences: state.fetchBriefingPreferences,
+      updatePreferences: state.updateBriefingPreferences,
+    })),
+  );
 
 export const useNotifications = () =>
-  useStore((state) => ({
-    notifications: state.notifications,
-    unreadCount: state.unreadCount,
-    loading: state.notificationsLoading,
-  }));
+  useStore(
+    useShallow((state) => ({
+      notifications: state.notifications,
+      unreadCount: state.unreadCount,
+      loading: state.notificationsLoading,
+    })),
+  );
 
 export const useProjects = () =>
-  useStore((state) => ({
-    projects: state.projects,
-    loading: state.projectsLoading,
-    error: state.projectsError,
-  }));
+  useStore(
+    useShallow((state) => ({
+      projects: state.projects,
+      loading: state.projectsLoading,
+      error: state.projectsError,
+    })),
+  );
 
 export const useProjectActions = () =>
-  useStore((state) => ({
-    fetchProjects: state.fetchProjects,
-    createProject: state.createProject,
-    updateProject: state.updateProject,
-    deleteProject: state.deleteProject,
-  }));
+  useStore(
+    useShallow((state) => ({
+      fetchProjects: state.fetchProjects,
+      createProject: state.createProject,
+      updateProject: state.updateProject,
+      deleteProject: state.deleteProject,
+    })),
+  );
 
 export const useNotificationActions = () =>
-  useStore((state) => ({
-    fetchNotifications: state.fetchNotifications,
-    markRead: state.markRead,
-    markAllRead: state.markAllRead,
-    addNotification: state.addNotification,
-  }));
+  useStore(
+    useShallow((state) => ({
+      fetchNotifications: state.fetchNotifications,
+      markRead: state.markRead,
+      markAllRead: state.markAllRead,
+      addNotification: state.addNotification,
+    })),
+  );
 
 export const useReviewQueue = () =>
-  useStore((state) => ({
-    reviewQueue: state.reviewQueue,
-    loading: state.reviewLoading,
-    error: state.reviewError,
-    count: state.reviewCount,
-  }));
+  useStore(
+    useShallow((state) => ({
+      reviewQueue: state.reviewQueue,
+      loading: state.reviewLoading,
+      error: state.reviewError,
+      count: state.reviewCount,
+    })),
+  );
 
 export const useReviewActions = () =>
-  useStore((state) => ({
-    fetchReviewQueue: state.fetchReviewQueue,
-    approveTask: state.approveTask,
-    rejectTask: state.rejectTask,
-  }));
+  useStore(
+    useShallow((state) => ({
+      fetchReviewQueue: state.fetchReviewQueue,
+      approveTask: state.approveTask,
+      rejectTask: state.rejectTask,
+    })),
+  );
 
 export const useBriefingHistoryError = () =>
   useStore((state) => state.briefingHistoryError);

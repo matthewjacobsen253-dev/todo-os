@@ -71,34 +71,17 @@ export function WorkspaceCreateDialog({
         return;
       }
 
-      // Create workspace
-      const { data: workspaceData, error: createError } = await supabase
-        .from("workspaces")
-        .insert({
-          name: name.trim(),
-          slug: slug || generateSlug(name),
-          description: description.trim() || null,
-        })
-        .select()
-        .single();
+      // Create workspace via SECURITY DEFINER function (bypasses RLS)
+      const { data: workspaceData, error: createError } = await supabase.rpc(
+        "create_workspace",
+        {
+          ws_name: name.trim(),
+          ws_slug: slug || generateSlug(name),
+        },
+      );
 
       if (createError) {
         setError(createError.message || "Failed to create workspace");
-        setIsLoading(false);
-        return;
-      }
-
-      // Add user as owner
-      const { error: memberError } = await supabase
-        .from("workspace_members")
-        .insert({
-          workspace_id: workspaceData.id,
-          user_id: user.id,
-          role: "owner",
-        });
-
-      if (memberError) {
-        setError(memberError.message || "Failed to add you as workspace owner");
         setIsLoading(false);
         return;
       }
@@ -108,11 +91,7 @@ export function WorkspaceCreateDialog({
       setSlug("");
       setDescription("");
       onOpenChange(false);
-      onCreated({
-        id: workspaceData.id,
-        name: workspaceData.name,
-        slug: workspaceData.slug,
-      });
+      onCreated(workspaceData);
     } catch {
       setError("An unexpected error occurred. Please try again.");
     } finally {

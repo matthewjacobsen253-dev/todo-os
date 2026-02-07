@@ -39,7 +39,8 @@ export const useBriefingWithSync = () => {
         fetchBriefing(currentWorkspace.id, user.id);
       }
     });
-  }, [currentWorkspace?.id, fetchBriefing]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentWorkspace?.id]);
 
   const generate = useCallback(async () => {
     if (!currentWorkspace?.id) {

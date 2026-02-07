@@ -35,7 +35,8 @@ export const useTasksWithSync = () => {
     if (currentWorkspace?.id) {
       fetchTasks(currentWorkspace.id);
     }
-  }, [currentWorkspace?.id, fetchTasks]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentWorkspace?.id]);
 
   // Create a task with optimistic update
   const createTaskOptimistic = useCallback(
@@ -257,7 +258,8 @@ export const useTasksRealtime = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [currentWorkspace?.id, fetchTasks]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentWorkspace?.id]);
 };
 
 /**

@@ -13,7 +13,8 @@ export const useReview = () => {
     if (currentWorkspace?.id) {
       fetchReviewQueue(currentWorkspace.id);
     }
-  }, [currentWorkspace?.id, fetchReviewQueue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentWorkspace?.id]);
 
   const approve = useCallback(
     async (taskId: string, edits?: Record<string, unknown>) => {

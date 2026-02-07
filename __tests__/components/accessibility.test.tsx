@@ -62,6 +62,26 @@ vi.mock("@/store", async (importOriginal) => {
       generateBriefing: vi.fn(),
       submitFeedback: vi.fn(),
     }),
+    useWorkspaceActions: () => ({
+      setCurrentWorkspace: vi.fn(),
+      fetchWorkspaces: vi.fn(),
+      createWorkspace: vi.fn(),
+    }),
+    useStore: Object.assign(() => null, {
+      getState: () => ({
+        currentWorkspace: {
+          id: "ws-1",
+          name: "Test",
+          slug: "test",
+          owner_id: "user-1",
+          created_at: "2026-01-01",
+          settings: {},
+          role: "owner",
+          member_count: 1,
+        },
+        setCurrentWorkspace: vi.fn(),
+      }),
+    }),
   };
 });
 
@@ -91,14 +111,6 @@ vi.mock("@/lib/supabase/client", () => ({
         order: () => [],
       }),
     }),
-  }),
-}));
-
-// Mock workspace store
-vi.mock("@/lib/store/workspace", () => ({
-  useWorkspaceStore: () => ({
-    currentWorkspace: { id: "ws-1", name: "Test", slug: "test" },
-    setCurrentWorkspace: vi.fn(),
   }),
 }));
 

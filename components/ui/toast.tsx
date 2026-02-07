@@ -37,29 +37,33 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [toasts, setToasts] = React.useState<Toast[]>([]);
 
-  const addToast = (
-    message: string,
-    type: ToastType = "info",
-    duration = 5000,
-  ) => {
-    const id = Date.now().toString();
-    const newToast: Toast = { id, message, type, duration };
+  const addToast = React.useCallback(
+    (message: string, type: ToastType = "info", duration = 5000) => {
+      const id = Date.now().toString();
+      const newToast: Toast = { id, message, type, duration };
 
-    setToasts((prev) => [...prev, newToast]);
+      setToasts((prev) => [...prev, newToast]);
 
-    if (duration > 0) {
-      setTimeout(() => {
-        removeToast(id);
-      }, duration);
-    }
-  };
+      if (duration > 0) {
+        setTimeout(() => {
+          setToasts((prev) => prev.filter((toast) => toast.id !== id));
+        }, duration);
+      }
+    },
+    [],
+  );
 
-  const removeToast = (id: string) => {
+  const removeToast = React.useCallback((id: string) => {
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
-  };
+  }, []);
+
+  const value = React.useMemo(
+    () => ({ toasts, addToast, removeToast }),
+    [toasts, addToast, removeToast],
+  );
 
   return (
-    <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
+    <ToastContext.Provider value={value}>
       {children}
       <ToastContainer toasts={toasts} removeToast={removeToast} />
     </ToastContext.Provider>

@@ -104,16 +104,14 @@ export function TaskCreateForm({
         </div>
       </div>
 
-      {projects && projects.length > 0 && (
-        <div className="space-y-2">
-          <Label>Project</Label>
-          <ProjectSelect
-            projects={projects}
-            value={projectId}
-            onChange={setProjectId}
-          />
-        </div>
-      )}
+      <div className="space-y-2">
+        <Label>Project</Label>
+        <ProjectSelect
+          projects={projects || []}
+          value={projectId}
+          onChange={setProjectId}
+        />
+      </div>
 
       {error && <p className="text-sm text-destructive">{error}</p>}
 

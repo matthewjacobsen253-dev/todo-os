@@ -80,7 +80,8 @@ export const useKeyboardShortcuts = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [toggleQuickCapture, toggleCommandPalette, closeTaskDetail]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 };
 
 /**

@@ -23,14 +23,16 @@ export const useWorkspace = () => {
   // Auto-fetch workspaces on mount
   useEffect(() => {
     fetchWorkspaces();
-  }, [fetchWorkspaces]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Set first workspace as current if none is selected
   useEffect(() => {
     if (!currentWorkspace && workspaces.length > 0 && !workspaceLoading) {
       setCurrentWorkspace(workspaces[0]);
     }
-  }, [currentWorkspace, workspaces, workspaceLoading, setCurrentWorkspace]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentWorkspace, workspaces, workspaceLoading]);
 
   return {
     currentWorkspace,

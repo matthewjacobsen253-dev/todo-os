@@ -28,14 +28,14 @@ const mockProjects: Project[] = [
 ];
 
 describe("TaskCreateForm with Projects", () => {
-  it("does not render project select when no projects provided", () => {
+  it("renders project select even when no projects provided", () => {
     render(<TaskCreateForm onSubmit={vi.fn()} />);
-    expect(screen.queryByText("Project")).not.toBeInTheDocument();
+    expect(screen.getByText("Project")).toBeInTheDocument();
   });
 
-  it("does not render project select when projects array is empty", () => {
+  it("renders project select even when projects array is empty", () => {
     render(<TaskCreateForm onSubmit={vi.fn()} projects={[]} />);
-    expect(screen.queryByText("Project")).not.toBeInTheDocument();
+    expect(screen.getByText("Project")).toBeInTheDocument();
   });
 
   it("renders project select when projects are provided", () => {

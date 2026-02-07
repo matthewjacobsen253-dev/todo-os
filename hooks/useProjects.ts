@@ -22,7 +22,8 @@ export const useProjectsWithSync = () => {
     if (currentWorkspace?.id) {
       fetchProjects(currentWorkspace.id);
     }
-  }, [currentWorkspace?.id, fetchProjects]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentWorkspace?.id]);
 
   const createProjectOptimistic = useCallback(
     async (input: CreateProjectInput) => {

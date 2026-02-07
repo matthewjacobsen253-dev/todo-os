@@ -21,7 +21,12 @@ import { createClient } from "@/lib/supabase/client";
 import { WorkspaceSwitcher } from "@/components/layout/workspace-switcher";
 import { SearchCommand } from "@/components/layout/search-command";
 import { QuickCaptureDialog } from "@/components/tasks/quick-capture-dialog";
-import { useUI, useUIActions, useReviewQueue } from "@/store";
+import {
+  useUI,
+  useUIActions,
+  useReviewQueue,
+  useWorkspaceActions,
+} from "@/store";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useProjectsWithSync } from "@/hooks/useProjects";
 import { useToast } from "@/components/ui/toast";
@@ -43,6 +48,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   const { quickCaptureOpen, commandPaletteOpen } = useUI();
   const { toggleQuickCapture, toggleCommandPalette } = useUIActions();
+  const { fetchWorkspaces } = useWorkspaceActions();
   const { projects } = useProjectsWithSync();
   const { count: reviewCount } = useReviewQueue();
   const { addToast } = useToast();
@@ -65,6 +71,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     checkAuth();
+    fetchWorkspaces();
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -107,7 +114,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
       setUnreadCount(count || 0);
     } catch {
-      addToast("Could not load task count", "warning");
+      // Silently ignore — task count is non-critical
     }
   };
 
