@@ -4,11 +4,7 @@
  */
 
 import { useEffect, useCallback } from "react";
-import {
-  useCurrentWorkspace,
-  useWorkspaceActions,
-  useStore,
-} from "@/store";
+import { useCurrentWorkspace, useWorkspaceActions, useStore } from "@/store";
 import type { CreateWorkspaceInput, WorkspaceWithRole } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 
@@ -58,14 +54,14 @@ export const useWorkspaceActions_ = () => {
    */
   const switchWorkspace = useCallback(
     (workspaceId: string) => {
-      const workspace = useStore.getState().workspaces.find(
-        (w) => w.id === workspaceId
-      );
+      const workspace = useStore
+        .getState()
+        .workspaces.find((w) => w.id === workspaceId);
       if (workspace) {
         setCurrentWorkspace(workspace);
       }
     },
-    [setCurrentWorkspace]
+    [setCurrentWorkspace],
   );
 
   /**
@@ -81,7 +77,7 @@ export const useWorkspaceActions_ = () => {
         throw error;
       }
     },
-    [createWorkspace, setCurrentWorkspace]
+    [createWorkspace, setCurrentWorkspace],
   );
 
   /**
@@ -103,7 +99,7 @@ export const useWorkspaceActions_ = () => {
       // Refetch workspaces to get updated data
       await fetchWorkspaces();
     },
-    [currentWorkspace?.id, supabase, fetchWorkspaces]
+    [currentWorkspace?.id, supabase, fetchWorkspaces],
   );
 
   /**
@@ -128,7 +124,7 @@ export const useWorkspaceActions_ = () => {
           full_name,
           avatar_url
         )
-      `
+      `,
       )
       .eq("workspace_id", currentWorkspace.id);
 
@@ -163,19 +159,17 @@ export const useWorkspaceActions_ = () => {
       }
 
       // Add user to workspace
-      const { error } = await supabase
-        .from("workspace_members")
-        .insert([
-          {
-            workspace_id: currentWorkspace.id,
-            user_id: existingUser.id,
-            role,
-          },
-        ]);
+      const { error } = await supabase.from("workspace_members").insert([
+        {
+          workspace_id: currentWorkspace.id,
+          user_id: existingUser.id,
+          role,
+        },
+      ]);
 
       if (error) throw error;
     },
-    [currentWorkspace?.id, supabase]
+    [currentWorkspace?.id, supabase],
   );
 
   /**
@@ -195,7 +189,7 @@ export const useWorkspaceActions_ = () => {
 
       if (error) throw error;
     },
-    [currentWorkspace?.id, supabase]
+    [currentWorkspace?.id, supabase],
   );
 
   /**
@@ -215,7 +209,7 @@ export const useWorkspaceActions_ = () => {
 
       if (error) throw error;
     },
-    [currentWorkspace?.id, supabase]
+    [currentWorkspace?.id, supabase],
   );
 
   /**
@@ -249,7 +243,7 @@ export const useWorkspaceActions_ = () => {
       // Refetch workspaces
       await fetchWorkspaces();
     },
-    [currentWorkspace?.id, supabase, setCurrentWorkspace, fetchWorkspaces]
+    [currentWorkspace?.id, supabase, setCurrentWorkspace, fetchWorkspaces],
   );
 
   return {
@@ -279,7 +273,7 @@ export const useWorkspaceSettings = () => {
       };
       await updateWorkspaceSettings(settings);
     },
-    [currentWorkspace?.settings, updateWorkspaceSettings]
+    [currentWorkspace?.settings, updateWorkspaceSettings],
   );
 
   const updateTheme = useCallback(
@@ -290,7 +284,7 @@ export const useWorkspaceSettings = () => {
       };
       await updateWorkspaceSettings(settings);
     },
-    [currentWorkspace?.settings, updateWorkspaceSettings]
+    [currentWorkspace?.settings, updateWorkspaceSettings],
   );
 
   const updateNotifications = useCallback(
@@ -301,7 +295,7 @@ export const useWorkspaceSettings = () => {
       };
       await updateWorkspaceSettings(settings);
     },
-    [currentWorkspace?.settings, updateWorkspaceSettings]
+    [currentWorkspace?.settings, updateWorkspaceSettings],
   );
 
   return {

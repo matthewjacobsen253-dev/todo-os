@@ -84,13 +84,13 @@ interface BriefingContent {
   defer_suggestions: Array<{
     task_id: string;
     title: string;
-    reason: string;  // Why defer: "Not due this week", "Low priority", etc.
+    reason: string; // Why defer: "Not due this week", "Low priority", etc.
   }>;
 
   waiting_on: Array<{
     task_id: string;
     title: string;
-    waiting_for: string;  // Person or resource
+    waiting_for: string; // Person or resource
   }>;
 
   overdue: Array<{
@@ -186,15 +186,15 @@ Stored in `BriefingPreference`:
 
 ```typescript
 interface BriefingFilters {
-  projects?: string[];              // Only show these projects
-  priorities?: TaskPriority[];       // Minimum priority level
-  include_completed?: boolean;       // Include completed tasks?
-  max_outcomes?: number;             // Top N outcomes (default 3)
-  max_must_do?: number;              // Max must-do items (default 5)
-  include_waiting_on?: boolean;      // Show blockers? (default true)
-  suggest_deferrals?: boolean;       // Suggest deferrals? (default true)
-  show_overdue?: boolean;            // Show overdue? (default true)
-  timezone?: string;                 // User's timezone
+  projects?: string[]; // Only show these projects
+  priorities?: TaskPriority[]; // Minimum priority level
+  include_completed?: boolean; // Include completed tasks?
+  max_outcomes?: number; // Top N outcomes (default 3)
+  max_must_do?: number; // Max must-do items (default 5)
+  include_waiting_on?: boolean; // Show blockers? (default true)
+  suggest_deferrals?: boolean; // Suggest deferrals? (default true)
+  show_overdue?: boolean; // Show overdue? (default true)
+  timezone?: string; // User's timezone
 }
 ```
 
@@ -204,13 +204,14 @@ User feedback improves future briefings:
 
 ```typescript
 interface BriefingFeedback {
-  helpful: boolean;                  // Overall helpfulness
+  helpful: boolean; // Overall helpfulness
   accuracy_rating?: 1 | 2 | 3 | 4 | 5;
-  notes?: string;                    // Free-form feedback
+  notes?: string; // Free-form feedback
 }
 ```
 
 **Feedback Usage:**
+
 - If "not helpful" consistently: lower threshold for suggestions
 - High accuracy rating on top_outcomes: increase their weight
 - User notes mentioning "too many tasks": reduce must_do count
@@ -263,6 +264,7 @@ Every day at [user.briefing_preference.delivery_time]:
 ### On-Demand Generation
 
 Users can generate briefings any time:
+
 - Click "Generate Briefing" button
 - Regenerates for current day
 - Overwrites previous briefing
@@ -284,6 +286,7 @@ POST /api/briefing/:id/feedback
 ### Analyzing Feedback
 
 Weekly aggregation:
+
 - Average helpfulness score
 - Most appreciated sections
 - Common user feedback themes
@@ -321,8 +324,8 @@ interface BriefingPreference {
   id: string;
   workspace_id: string;
   user_id: string;
-  delivery_time: string;          // HH:mm format (24h)
-  timezone: string;               // e.g., "America/New_York"
+  delivery_time: string; // HH:mm format (24h)
+  timezone: string; // e.g., "America/New_York"
   enabled: boolean;
   filters: BriefingFilters;
   created_at: ISO8601;
@@ -332,24 +335,31 @@ interface BriefingPreference {
 ## API Endpoints
 
 ### GET /api/briefing
+
 Get today's briefing (or generate if missing).
 
 ### POST /api/briefing/generate
+
 Force regenerate today's briefing.
 
 ### GET /api/briefing/history
+
 Get past briefings (paginated).
 
 ### GET /api/briefing/:id
+
 Get specific briefing by ID.
 
 ### POST /api/briefing/:id/feedback
+
 Record user feedback on briefing quality.
 
 ### GET /api/briefing/preferences
+
 Get user's briefing preferences.
 
 ### PUT /api/briefing/preferences
+
 Update briefing preferences.
 
 ## Quality Metrics

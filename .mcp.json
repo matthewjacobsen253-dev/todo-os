@@ -7,7 +7,12 @@
     },
     "supabase": {
       "command": "npx",
-      "args": ["-y", "supabase-mcp-server@latest", "--project-ref", "mzyqdasukuvsriejhblm"],
+      "args": [
+        "-y",
+        "supabase-mcp-server@latest",
+        "--project-ref",
+        "mzyqdasukuvsriejhblm"
+      ],
       "env": {}
     }
   }

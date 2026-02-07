@@ -15,6 +15,7 @@ Given a source file, extract and create comprehensive tests for it.
 6. Run the tests to verify they pass
 
 ## Test Conventions:
+
 - Use `describe` blocks per function/component
 - Use clear test names: `it("should do X when Y")`
 - Mock Supabase client for database calls

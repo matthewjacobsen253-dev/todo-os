@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import {
   Bell,
   CheckCircle2,
@@ -17,10 +17,10 @@ import {
   CheckSquare,
   Zap,
   X,
-} from 'lucide-react';
-import type { NotificationType } from '@/types';
-import { cn } from '@/lib/utils';
-import { useRouter } from 'next/navigation';
+} from "lucide-react";
+import type { NotificationType } from "@/types";
+import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 interface NotificationItem {
   id: string;
@@ -63,12 +63,12 @@ const formatRelativeTime = (dateStr: string): string => {
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    if (diffMins < 1) return 'Just now';
+    if (diffMins < 1) return "Just now";
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 7) return `${diffDays}d ago`;
 
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   } catch {
     return dateStr;
   }
@@ -77,49 +77,49 @@ const formatRelativeTime = (dateStr: string): string => {
 // Mock notifications for demo
 const mockNotifications: NotificationItem[] = [
   {
-    id: '1',
-    type: 'briefing_ready',
-    title: 'Your Daily Briefing is Ready',
+    id: "1",
+    type: "briefing_ready",
+    title: "Your Daily Briefing is Ready",
     message:
-      'Your morning briefing has been generated with 3 top outcomes and 2 critical tasks.',
+      "Your morning briefing has been generated with 3 top outcomes and 2 critical tasks.",
     read: false,
-    actionUrl: '/briefing',
+    actionUrl: "/briefing",
     timestamp: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
   },
   {
-    id: '2',
-    type: 'review_needed',
-    title: '4 Tasks Need Review',
-    message: 'You have 4 extracted tasks from emails waiting for approval.',
+    id: "2",
+    type: "review_needed",
+    title: "4 Tasks Need Review",
+    message: "You have 4 extracted tasks from emails waiting for approval.",
     read: false,
-    actionUrl: '/review',
+    actionUrl: "/review",
     timestamp: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
   },
   {
-    id: '3',
-    type: 'task_assigned',
-    title: 'New Task Assigned',
+    id: "3",
+    type: "task_assigned",
+    title: "New Task Assigned",
     message: 'Sarah Chen assigned you "Review Q1 Strategy" task.',
     read: true,
-    actionUrl: '/tasks',
+    actionUrl: "/tasks",
     timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
   },
   {
-    id: '4',
-    type: 'task_due',
-    title: 'Task Due Tomorrow',
+    id: "4",
+    type: "task_due",
+    title: "Task Due Tomorrow",
     message: 'Your task "Complete Project Proposal" is due tomorrow at 5 PM.',
     read: true,
-    actionUrl: '/tasks',
+    actionUrl: "/tasks",
     timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
   },
   {
-    id: '5',
-    type: 'scan_complete',
-    title: 'Email Scan Completed',
-    message: 'Successfully scanned 12 emails and extracted 3 new tasks.',
+    id: "5",
+    type: "scan_complete",
+    title: "Email Scan Completed",
+    message: "Successfully scanned 12 emails and extracted 3 new tasks.",
     read: true,
-    actionUrl: '/review',
+    actionUrl: "/review",
     timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
   },
 ];
@@ -145,8 +145,8 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
       onMarkAsRead?.(notification.id);
       setLocalNotifications(
         localNotifications.map((n) =>
-          n.id === notification.id ? { ...n, read: true } : n
-        )
+          n.id === notification.id ? { ...n, read: true } : n,
+        ),
       );
     }
     if (notification.actionUrl) {
@@ -158,15 +158,13 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
   const handleDismiss = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     onDismiss?.(id);
-    setLocalNotifications(
-      localNotifications.filter((n) => n.id !== id)
-    );
+    setLocalNotifications(localNotifications.filter((n) => n.id !== id));
   };
 
   const handleMarkAllAsRead = () => {
     onMarkAllAsRead?.();
     setLocalNotifications(
-      localNotifications.map((n) => ({ ...n, read: true }))
+      localNotifications.map((n) => ({ ...n, read: true })),
     );
   };
 
@@ -180,7 +178,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
               variant="destructive"
               className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
             >
-              {unreadCount > 9 ? '9+' : unreadCount}
+              {unreadCount > 9 ? "9+" : unreadCount}
             </Badge>
           )}
         </Button>
@@ -209,9 +207,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
           {localNotifications.length === 0 ? (
             <div className="p-8 text-center space-y-2">
               <CheckCircle2 className="h-8 w-8 text-muted-foreground mx-auto" />
-              <p className="text-sm text-muted-foreground">
-                All caught up!
-              </p>
+              <p className="text-sm text-muted-foreground">All caught up!</p>
             </div>
           ) : (
             <div className="divide-y divide-border">
@@ -220,8 +216,8 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
                   key={notification.id}
                   onClick={() => handleNotificationClick(notification)}
                   className={cn(
-                    'w-full px-4 py-3 text-left hover:bg-muted transition-colors',
-                    !notification.read && 'bg-muted/50'
+                    "w-full px-4 py-3 text-left hover:bg-muted transition-colors",
+                    !notification.read && "bg-muted/50",
                   )}
                 >
                   <div className="flex items-start gap-3">
@@ -234,9 +230,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
                           {notification.title}
                         </p>
                         <button
-                          onClick={(e) =>
-                            handleDismiss(e, notification.id)
-                          }
+                          onClick={(e) => handleDismiss(e, notification.id)}
                           className="flex-shrink-0 text-muted-foreground hover:text-foreground transition-colors"
                         >
                           <X className="h-3 w-3" />
@@ -269,7 +263,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
                 size="sm"
                 className="w-full text-xs"
                 onClick={() => {
-                  router.push('/notifications');
+                  router.push("/notifications");
                   setOpen(false);
                 }}
               >

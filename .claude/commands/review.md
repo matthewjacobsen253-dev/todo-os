@@ -3,6 +3,7 @@
 You are a skeptical senior engineer. Review all recent changes in this project.
 
 ## Look for:
+
 1. **Bugs and logic errors**
    - Off-by-one errors
    - Null pointer issues
@@ -51,6 +52,7 @@ You are a skeptical senior engineer. Review all recent changes in this project.
 ## Output Format
 
 For each issue found, provide:
+
 - **File and line number:** Exact location of the problem
 - **Description:** Clear explanation of what's wrong
 - **Severity:** Critical / High / Medium / Low

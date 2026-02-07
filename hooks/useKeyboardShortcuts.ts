@@ -23,11 +23,8 @@ interface KeyboardShortcut {
  * Handles shortcuts like Cmd+K for quick capture, Escape to close panels
  */
 export const useKeyboardShortcuts = () => {
-  const {
-    toggleQuickCapture,
-    toggleCommandPalette,
-    closeTaskDetail,
-  } = useUIActions();
+  const { toggleQuickCapture, toggleCommandPalette, closeTaskDetail } =
+    useUIActions();
 
   useEffect(() => {
     /**
@@ -100,7 +97,7 @@ export const useKeyboardShortcut = (
     ctrlKey?: boolean;
     shiftKey?: boolean;
     altKey?: boolean;
-  }
+  },
 ) => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -140,12 +137,14 @@ export const getShortcutString = (
     ctrlKey?: boolean;
     shiftKey?: boolean;
     altKey?: boolean;
-  }
+  },
 ): string => {
   const parts: string[] = [];
 
   // Determine OS for proper modifier display
-  const isMac = typeof navigator !== "undefined" && /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+  const isMac =
+    typeof navigator !== "undefined" &&
+    /Mac|iPhone|iPad|iPod/.test(navigator.platform);
 
   if (options?.ctrlKey) {
     parts.push(isMac ? "Ctrl" : "Ctrl");

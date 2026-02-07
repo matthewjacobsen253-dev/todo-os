@@ -31,6 +31,7 @@ Task Creation (on Approval)
 ### 1. OAuth Authentication
 
 Each user connects their email account through OAuth 2.0 flow:
+
 - **Gmail**: Uses Google OAuth with `https://www.googleapis.com/auth/gmail.readonly` scope
 - **Outlook**: Uses Microsoft OAuth with `Mail.Read` scope
 
@@ -39,6 +40,7 @@ Credentials are stored securely in Supabase with encrypted access tokens.
 ### 2. Email Fetching
 
 Periodic scans (configurable interval, default 2 hours) fetch new emails:
+
 - Only unread emails are processed to avoid duplicates
 - Respects quiet hours (e.g., 6 PM - 8 AM)
 - Skips weekends if disabled in configuration
@@ -47,6 +49,7 @@ Periodic scans (configurable interval, default 2 hours) fetch new emails:
 ### 3. Content Parsing
 
 Email parsing extracts:
+
 - **From**: Sender name and email address
 - **To**: Recipient email
 - **Subject**: Email subject line
@@ -63,17 +66,20 @@ The extraction engine applies rules and patterns:
 #### Extraction Patterns
 
 **Direct Requests:**
+
 - "Can you..." / "Could you..."
 - "Please..." / "I need you to..."
 - "Action required:" / "Action item:"
 - "TODO:" / "FIXME:"
 
 **Implicit Requests:**
+
 - Deadline mentions: "by Friday", "by EOD", "before Q1"
 - Assignment statements: "You should...", "Someone needs to..."
 - Questions requiring action: "Can we schedule...?"
 
 **Delegations:**
+
 - "@mention" + action: "Can @sarah review this?"
 - "Assign to X"
 
@@ -91,6 +97,7 @@ The confidence score (0-1 scale) reflects extraction quality:
 #### Scoring Factors
 
 **High Confidence (0.8+):**
+
 - Contains direct action verbs ("submit", "approve", "review")
 - Explicit deadline mentioned
 - Sender is a known contact or manager
@@ -98,12 +105,14 @@ The confidence score (0-1 scale) reflects extraction quality:
 - Clear responsibility assignment
 
 **Medium Confidence (0.6-0.79):**
+
 - Contains imperative sentence
 - Moderate urgency language
 - Related to known projects
 - Discussion of tasks with implied action
 
 **Low Confidence (<0.6):**
+
 - Passive language ("it would be good if...")
 - Vague instructions ("let me know about...")
 - Conversational context (not clearly actionable)
@@ -143,23 +152,27 @@ score = min(score, 1.0)
 Priority is determined by:
 
 **Urgent:**
+
 - Email subject contains "urgent" or "ASAP"
 - Sender is executive/manager
 - Deadline is today or tomorrow
 - Contains escalation language
 
 **High:**
+
 - Deadline within 1 week
 - Sender is direct manager or key stakeholder
 - Contains "action required"
 - Related to critical projects
 
 **Medium:**
+
 - Deadline within 2 weeks
 - Normal team communication
 - Non-critical project work
 
 **Low:**
+
 - General information or FYI
 - Deadline beyond 2 weeks
 - Routine/recurring tasks
@@ -176,6 +189,7 @@ Before creating a task, the system checks for duplicates:
 ## Human-in-the-Loop Review
 
 All extracted tasks enter the review queue unless:
+
 - Confidence score >= 0.95 AND sender is trusted
 - Task matches a known recurring pattern
 
@@ -197,11 +211,13 @@ All extracted tasks enter the review queue unless:
 ### Error Handling
 
 **Transient Errors** (retry up to 3 times with exponential backoff):
+
 - Network timeouts
 - Rate limit exceeded
 - Temporary service unavailability
 
 **Permanent Errors** (log and skip):
+
 - Invalid OAuth token → Require re-authentication
 - Email marked as spam → Skip permanently
 - Unreadable email format → Log with metadata
@@ -226,6 +242,7 @@ Every extraction action is logged:
 ```
 
 Logs are retained for 90 days and used for:
+
 - Debugging extraction failures
 - Improving confidence scoring
 - Compliance and audit trails
@@ -262,13 +279,13 @@ interface EmailScanConfig {
   id: string;
   workspace_id: string;
   user_id: string;
-  provider: 'gmail' | 'outlook';
+  provider: "gmail" | "outlook";
   enabled: boolean;
-  scan_interval_hours: number;        // 1-24
-  quiet_hours_start?: string;         // HH:mm format
-  quiet_hours_end?: string;           // HH:mm format
+  scan_interval_hours: number; // 1-24
+  quiet_hours_start?: string; // HH:mm format
+  quiet_hours_end?: string; // HH:mm format
   weekend_scan: boolean;
-  confidence_threshold: number;       // 0-1, auto-reject below
+  confidence_threshold: number; // 0-1, auto-reject below
   last_scan_at?: ISO8601;
   created_at: ISO8601;
 }
@@ -277,18 +294,23 @@ interface EmailScanConfig {
 ## API Endpoints
 
 ### GET /api/email-scan/status
+
 Returns current scan configuration and history.
 
 ### POST /api/email-scan/start
+
 Manually trigger a scan for the current user.
 
 ### GET /api/review/queue
+
 Get pending extracted tasks for review.
 
 ### POST /api/review/:taskId/approve
+
 Approve an extracted task and create it.
 
 ### POST /api/review/:taskId/reject
+
 Reject an extracted task.
 
 ## Future Enhancements

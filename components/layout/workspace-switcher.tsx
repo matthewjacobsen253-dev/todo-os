@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { ChevronDown, Plus, Building2 } from 'lucide-react'
-import { createClient } from '@/lib/supabase/client'
-import { useWorkspaceStore } from '@/lib/store/workspace'
+import { useState, useEffect } from "react";
+import { ChevronDown, Plus, Building2 } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import { useWorkspaceStore } from "@/lib/store/workspace";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,64 +11,66 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { WorkspaceCreateDialog } from './workspace-create-dialog'
+} from "@/components/ui/dropdown-menu";
+import { WorkspaceCreateDialog } from "./workspace-create-dialog";
 
 interface Workspace {
-  id: string
-  name: string
-  slug: string
+  id: string;
+  name: string;
+  slug: string;
 }
 
 export function WorkspaceSwitcher() {
-  const [workspaces, setWorkspaces] = useState<Workspace[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [isCreateOpen, setIsCreateOpen] = useState(false)
-  const { currentWorkspace, setCurrentWorkspace } = useWorkspaceStore()
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const { currentWorkspace, setCurrentWorkspace } = useWorkspaceStore();
 
   useEffect(() => {
-    loadWorkspaces()
-  }, [])
+    loadWorkspaces();
+  }, []);
 
   const loadWorkspaces = async () => {
     try {
-      setIsLoading(true)
-      const supabase = createClient()
+      setIsLoading(true);
+      const supabase = createClient();
 
       const { data, error } = await supabase
-        .from('workspaces')
-        .select('id, name, slug')
-        .order('created_at', { ascending: true })
+        .from("workspaces")
+        .select("id, name, slug")
+        .order("created_at", { ascending: true });
 
       if (error) {
-        console.error('Error loading workspaces:', error)
-        return
+        console.error("Error loading workspaces:", error);
+        return;
       }
 
-      setWorkspaces(data || [])
+      setWorkspaces(data || []);
 
       // Set first workspace as current if none selected
       if (!currentWorkspace && data && data.length > 0) {
-        setCurrentWorkspace(data[0])
+        setCurrentWorkspace(data[0]);
       }
     } catch (err) {
-      console.error('Error loading workspaces:', err)
+      console.error("Error loading workspaces:", err);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleSwitchWorkspace = (workspace: Workspace) => {
-    setCurrentWorkspace(workspace)
+    setCurrentWorkspace(workspace);
     // Trigger data refresh
-    window.dispatchEvent(new CustomEvent('workspace-changed', { detail: workspace }))
-  }
+    window.dispatchEvent(
+      new CustomEvent("workspace-changed", { detail: workspace }),
+    );
+  };
 
   const handleWorkspaceCreated = (workspace: Workspace) => {
-    setWorkspaces([...workspaces, workspace])
-    setCurrentWorkspace(workspace)
-    setIsCreateOpen(false)
-  }
+    setWorkspaces([...workspaces, workspace]);
+    setCurrentWorkspace(workspace);
+    setIsCreateOpen(false);
+  };
 
   return (
     <>
@@ -80,10 +82,12 @@ export function WorkspaceSwitcher() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-white truncate">
-                {isLoading ? 'Loading...' : currentWorkspace?.name || 'Select workspace'}
+                {isLoading
+                  ? "Loading..."
+                  : currentWorkspace?.name || "Select workspace"}
               </p>
               <p className="text-xs text-slate-400 truncate">
-                {currentWorkspace?.slug || ''}
+                {currentWorkspace?.slug || ""}
               </p>
             </div>
             <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-slate-300 transition flex-shrink-0" />
@@ -111,7 +115,9 @@ export function WorkspaceSwitcher() {
                     <Building2 className="w-3 h-3 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{workspace.name}</p>
+                    <p className="text-sm font-medium truncate">
+                      {workspace.name}
+                    </p>
                   </div>
                   {currentWorkspace?.id === workspace.id && (
                     <div className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" />
@@ -133,7 +139,11 @@ export function WorkspaceSwitcher() {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <WorkspaceCreateDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} onCreated={handleWorkspaceCreated} />
+      <WorkspaceCreateDialog
+        open={isCreateOpen}
+        onOpenChange={setIsCreateOpen}
+        onCreated={handleWorkspaceCreated}
+      />
     </>
-  )
+  );
 }

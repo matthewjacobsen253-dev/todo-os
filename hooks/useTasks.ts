@@ -5,7 +5,13 @@
 
 import { useEffect, useCallback } from "react";
 import { useTasks, useTaskActions, useCurrentWorkspace } from "@/store";
-import type { Task, CreateTaskInput, UpdateTaskInput, TaskStatus, TaskPriority } from "@/types";
+import type {
+  Task,
+  CreateTaskInput,
+  UpdateTaskInput,
+  TaskStatus,
+  TaskPriority,
+} from "@/types";
 import { createClient } from "@/lib/supabase/client";
 
 /**
@@ -15,8 +21,14 @@ import { createClient } from "@/lib/supabase/client";
 export const useTasksWithSync = () => {
   const currentWorkspace = useCurrentWorkspace();
   const { tasks, filteredTasks, filters, loading, error } = useTasks();
-  const { fetchTasks, createTask, updateTask, deleteTask, setFilter, clearFilters } =
-    useTaskActions();
+  const {
+    fetchTasks,
+    createTask,
+    updateTask,
+    deleteTask,
+    setFilter,
+    clearFilters,
+  } = useTaskActions();
 
   // Auto-fetch tasks when workspace changes
   useEffect(() => {
@@ -61,7 +73,7 @@ export const useTasksWithSync = () => {
         throw error;
       }
     },
-    [currentWorkspace?.id, createTask, tasks.length]
+    [currentWorkspace?.id, createTask, tasks.length],
   );
 
   // Update a task with optimistic update
@@ -85,7 +97,7 @@ export const useTasksWithSync = () => {
         throw error;
       }
     },
-    [currentWorkspace?.id, updateTask, tasks]
+    [currentWorkspace?.id, updateTask, tasks],
   );
 
   // Delete a task
@@ -101,7 +113,7 @@ export const useTasksWithSync = () => {
         throw error;
       }
     },
-    [currentWorkspace?.id, deleteTask]
+    [currentWorkspace?.id, deleteTask],
   );
 
   // Change task status
@@ -109,7 +121,7 @@ export const useTasksWithSync = () => {
     async (taskId: string, status: TaskStatus) => {
       return updateTaskOptimistic(taskId, { status });
     },
-    [updateTaskOptimistic]
+    [updateTaskOptimistic],
   );
 
   // Change task priority
@@ -117,7 +129,7 @@ export const useTasksWithSync = () => {
     async (taskId: string, priority: TaskPriority) => {
       return updateTaskOptimistic(taskId, { priority });
     },
-    [updateTaskOptimistic]
+    [updateTaskOptimistic],
   );
 
   return {
@@ -158,28 +170,28 @@ export const useTaskSearch = () => {
     (searchTerm: string) => {
       setFilter({ search: searchTerm });
     },
-    [setFilter]
+    [setFilter],
   );
 
   const filterByStatus = useCallback(
     (statuses: TaskStatus[]) => {
       setFilter({ status: statuses });
     },
-    [setFilter]
+    [setFilter],
   );
 
   const filterByPriority = useCallback(
     (priorities: TaskPriority[]) => {
       setFilter({ priority: priorities });
     },
-    [setFilter]
+    [setFilter],
   );
 
   const filterByProject = useCallback(
     (projectId: string | null) => {
       setFilter({ project: projectId });
     },
-    [setFilter]
+    [setFilter],
   );
 
   const filterByAssignee = useCallback(
@@ -190,14 +202,14 @@ export const useTaskSearch = () => {
         setFilter({ assignee: undefined });
       }
     },
-    [setFilter]
+    [setFilter],
   );
 
   const filterByTags = useCallback(
     (tags: string[]) => {
       setFilter({ tags });
     },
-    [setFilter]
+    [setFilter],
   );
 
   return {
@@ -238,7 +250,7 @@ export const useTasksRealtime = () => {
         () => {
           // Refetch tasks when there's a change
           fetchTasks(currentWorkspace.id);
-        }
+        },
       )
       .subscribe();
 
@@ -264,12 +276,12 @@ export const useBatchTaskOperations = () => {
       }
 
       const updates = taskIds.map((id) =>
-        updateTask(currentWorkspace.id, id, { status })
+        updateTask(currentWorkspace.id, id, { status }),
       );
 
       return Promise.all(updates);
     },
-    [currentWorkspace?.id, updateTask]
+    [currentWorkspace?.id, updateTask],
   );
 
   const batchUpdatePriority = useCallback(
@@ -279,12 +291,12 @@ export const useBatchTaskOperations = () => {
       }
 
       const updates = taskIds.map((id) =>
-        updateTask(currentWorkspace.id, id, { priority })
+        updateTask(currentWorkspace.id, id, { priority }),
       );
 
       return Promise.all(updates);
     },
-    [currentWorkspace?.id, updateTask]
+    [currentWorkspace?.id, updateTask],
   );
 
   const batchDelete = useCallback(
@@ -304,7 +316,7 @@ export const useBatchTaskOperations = () => {
       // Refetch tasks
       await fetchTasks(currentWorkspace.id);
     },
-    [currentWorkspace?.id, supabase, fetchTasks]
+    [currentWorkspace?.id, supabase, fetchTasks],
   );
 
   return {

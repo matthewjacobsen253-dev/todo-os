@@ -19,7 +19,7 @@ interface ToastContextType {
 }
 
 const ToastContext = React.createContext<ToastContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const useToast = () => {
@@ -38,7 +38,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
   const addToast = (
     message: string,
     type: ToastType = "info",
-    duration = 5000
+    duration = 5000,
   ) => {
     const id = Date.now().toString();
     const newToast: Toast = { id, message, type, duration };
@@ -122,7 +122,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast, onClose }) => {
       className={cn(
         "flex items-start gap-3 rounded-lg border border-current/20 p-4 shadow-lg animate-in slide-in-from-right-full duration-300",
         config.bg,
-        config.text
+        config.text,
       )}
       role="alert"
     >

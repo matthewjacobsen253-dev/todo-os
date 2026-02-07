@@ -21,7 +21,7 @@ import { createClient } from "@/lib/supabase/client";
 import { WorkspaceSwitcher } from "@/components/layout/workspace-switcher";
 import { SearchCommand } from "@/components/layout/search-command";
 import { QuickCaptureDialog } from "@/components/tasks/quick-capture-dialog";
-import { useUI, useUIActions } from "@/store";
+import { useUI, useUIActions, useReviewQueue } from "@/store";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useProjectsWithSync } from "@/hooks/useProjects";
 
@@ -43,6 +43,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const { quickCaptureOpen, commandPaletteOpen } = useUI();
   const { toggleQuickCapture, toggleCommandPalette } = useUIActions();
   const { projects } = useProjectsWithSync();
+  const { count: reviewCount } = useReviewQueue();
 
   // Register keyboard shortcuts
   useKeyboardShortcuts();
@@ -52,7 +53,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     { label: "Today", href: "/today", icon: CalendarDays },
     { label: "Briefing", href: "/briefing", icon: Zap },
     { label: "Projects", href: "/projects", icon: FolderKanban },
-    { label: "Review Queue", href: "/review", icon: ClipboardCheck },
+    {
+      label: "Review Queue",
+      href: "/review",
+      icon: ClipboardCheck,
+      badge: reviewCount > 0 ? reviewCount : undefined,
+    },
   ];
 
   useEffect(() => {

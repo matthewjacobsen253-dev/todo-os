@@ -1,6 +1,7 @@
 # Project: Ultimate To-Do OS
 
 ## Tech Stack
+
 - Next.js (App Router) with Supabase Starter Template
 - TypeScript, Tailwind CSS, shadcn/ui
 - Supabase (Postgres, Auth, Storage, Realtime)
@@ -11,6 +12,7 @@
 - Deployed on Vercel
 
 ## Commands
+
 - Dev server: pnpm dev
 - Run tests: pnpm test
 - Type check: pnpm tsc --noEmit
@@ -19,6 +21,7 @@
 - Format: pnpm format
 
 ## Project Structure
+
 - `app/` - Next.js App Router pages and API routes
 - `components/` - React components (ui/, layout/, tasks/, etc.)
 - `lib/` - Utilities, Supabase clients, store
@@ -27,6 +30,7 @@
 - `supabase/migrations/` - SQL migration files
 
 ## Rules
+
 - ALWAYS write tests for new features before marking them complete
 - ALWAYS run tests before committing
 - NEVER disable existing tests. Fix them.
@@ -42,6 +46,7 @@
 - Template uses `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (not ANON_KEY)
 
 ## Detailed Docs (read when relevant)
+
 - agent_docs/database_schema.md
 - agent_docs/email_extraction_pipeline.md
 - agent_docs/briefing_system.md
