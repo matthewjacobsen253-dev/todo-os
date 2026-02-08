@@ -25,6 +25,8 @@ import { WorkspaceSwitcher } from "@/components/layout/workspace-switcher";
 import { SearchCommand } from "@/components/layout/search-command";
 import { QuickCaptureDialog } from "@/components/tasks/quick-capture-dialog";
 import { FocusMode } from "@/components/tasks/focus-mode";
+import { DueDateQuickPicker } from "@/components/tasks/due-date-quick-picker";
+import { PriorityQuickPicker } from "@/components/tasks/priority-quick-picker";
 import {
   KeyboardHints,
   KeyboardHintsBadge,
@@ -422,6 +424,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
       {/* Keyboard Hints Badge (shows briefly on first load) */}
       <KeyboardHintsBadge onClick={toggleKeyboardHints} />
+
+      {/* Quick Pickers (keyboard-triggered) */}
+      <DueDateQuickPicker />
+      <PriorityQuickPicker />
     </div>
   );
 }
