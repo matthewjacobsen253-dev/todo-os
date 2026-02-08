@@ -8,6 +8,11 @@ import {
   TaskFiltersBar,
   TaskDetailSidebar,
 } from "@/components/tasks";
+import {
+  QuickFiltersBar,
+  applyQuickFilter,
+  type QuickFilter,
+} from "@/components/tasks/quick-filters-bar";
 import { useTasksWithSync } from "@/hooks/useTasks";
 import { useProjectsWithSync } from "@/hooks/useProjects";
 import { useUI, useUIActions } from "@/store";
@@ -35,11 +40,17 @@ export default function InboxPage() {
   );
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const [groupBy, setGroupBy] = useState<TaskGroupBy>("none");
+  const [quickFilter, setQuickFilter] = useState<QuickFilter>("all");
+
+  // Apply quick filter first, then apply store filters
+  const quickFilteredTasks = useMemo(() => {
+    return applyQuickFilter(filteredTasks, quickFilter);
+  }, [filteredTasks, quickFilter]);
 
   const sortedTasks = useMemo(() => {
-    if (!sortField) return filteredTasks;
-    return sortTasks(filteredTasks, sortField, sortDirection);
-  }, [filteredTasks, sortField, sortDirection]);
+    if (!sortField) return quickFilteredTasks;
+    return sortTasks(quickFilteredTasks, sortField, sortDirection);
+  }, [quickFilteredTasks, sortField, sortDirection]);
 
   const handleSortChange = (field: TaskSortField, dir: SortDirection) => {
     setSortField(field);
@@ -51,13 +62,15 @@ export default function InboxPage() {
     setSortField(undefined);
     setSortDirection("asc");
     setGroupBy("none");
+    setQuickFilter("all");
   };
 
   const hasActiveFilters =
     (filters.search && filters.search.length > 0) ||
     (filters.priority && filters.priority.length > 0) ||
     (filters.status && filters.status.length > 0) ||
-    filters.project;
+    filters.project ||
+    quickFilter !== "all";
 
   return (
     <div className="space-y-6">
@@ -75,7 +88,14 @@ export default function InboxPage() {
         </Button>
       </div>
 
-      {/* Filters */}
+      {/* Quick Filters */}
+      <QuickFiltersBar
+        tasks={filteredTasks}
+        activeFilter={quickFilter}
+        onFilterChange={setQuickFilter}
+      />
+
+      {/* Advanced Filters */}
       <TaskFiltersBar
         filters={filters}
         onFilterChange={setFilter}

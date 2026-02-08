@@ -3,6 +3,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -38,6 +39,9 @@ export function QuickCaptureDialog({
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Quick Capture</DialogTitle>
+          <DialogDescription>
+            Quickly add a new task to your inbox
+          </DialogDescription>
         </DialogHeader>
         <TaskCreateForm
           onSubmit={handleSubmit}

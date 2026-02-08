@@ -6,3 +6,6 @@ export { TaskFiltersBar } from "./task-filters";
 export { TaskCreateForm } from "./task-create-form";
 export { QuickCaptureDialog } from "./quick-capture-dialog";
 export { TaskDetailSidebar } from "./task-detail-sidebar";
+export { FocusMode } from "./focus-mode";
+export { QuickFiltersBar, applyQuickFilter } from "./quick-filters-bar";
+export type { QuickFilter } from "./quick-filters-bar";

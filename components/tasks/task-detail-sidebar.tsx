@@ -132,25 +132,35 @@ export function TaskDetailSidebar({
         <div className="space-y-6 mt-4">
           {/* Title */}
           <div className="space-y-2">
-            <Label>Title</Label>
+            <Label htmlFor="task-detail-title">Title</Label>
             {editingTitle ? (
               <Input
+                id="task-detail-title"
                 value={titleValue}
                 onChange={(e) => setTitleValue(e.target.value)}
                 onBlur={handleTitleBlur}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") e.currentTarget.blur();
+                  if (e.key === "Escape") {
+                    setTitleValue(task.title);
+                    setEditingTitle(false);
+                  }
                 }}
                 autoFocus
+                aria-label="Task title"
               />
             ) : (
               <p
-                className="text-lg font-semibold cursor-pointer hover:bg-muted/50 rounded px-2 py-1 -mx-2"
+                id="task-detail-title"
+                className="text-lg font-semibold cursor-pointer hover:bg-muted/50 rounded px-2 py-1 -mx-2 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 onClick={handleTitleFocus}
-                role="button"
                 tabIndex={0}
+                aria-label={`Task title: ${task.title}. Press Enter to edit.`}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") handleTitleFocus();
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleTitleFocus();
+                  }
                 }}
               >
                 {task.title}

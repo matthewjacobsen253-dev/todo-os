@@ -231,7 +231,8 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
                         </p>
                         <button
                           onClick={(e) => handleDismiss(e, notification.id)}
-                          className="flex-shrink-0 text-muted-foreground hover:text-foreground transition-colors"
+                          className="flex-shrink-0 text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring rounded"
+                          aria-label={`Dismiss notification: ${notification.title}`}
                         >
                           <X className="h-3 w-3" />
                         </button>

@@ -17,12 +17,18 @@ import {
   Menu,
   ChevronLeft,
   BellOff,
+  Target,
 } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { WorkspaceSwitcher } from "@/components/layout/workspace-switcher";
 import { SearchCommand } from "@/components/layout/search-command";
 import { QuickCaptureDialog } from "@/components/tasks/quick-capture-dialog";
+import { FocusMode } from "@/components/tasks/focus-mode";
+import {
+  KeyboardHints,
+  KeyboardHintsBadge,
+} from "@/components/layout/keyboard-hints";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,6 +40,8 @@ import {
   useReviewQueue,
   useWorkspaceActions,
   useTasks,
+  useCurrentWorkspace,
+  useTaskActions,
 } from "@/store";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useProjectsWithSync } from "@/hooks/useProjects";
@@ -55,9 +63,21 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [isMobile, setIsMobile] = useState(false);
   const [userEmail, setUserEmail] = useState<string>("");
 
-  const { quickCaptureOpen, commandPaletteOpen } = useUI();
-  const { toggleQuickCapture, toggleCommandPalette } = useUIActions();
+  const {
+    quickCaptureOpen,
+    commandPaletteOpen,
+    focusModeOpen,
+    keyboardHintsOpen,
+  } = useUI();
+  const {
+    toggleQuickCapture,
+    toggleCommandPalette,
+    toggleFocusMode,
+    toggleKeyboardHints,
+  } = useUIActions();
   const { fetchWorkspaces } = useWorkspaceActions();
+  const { updateTask } = useTaskActions();
+  const currentWorkspace = useCurrentWorkspace();
   const { projects } = useProjectsWithSync();
   const { count: reviewCount } = useReviewQueue();
   const { addToast } = useToast();
@@ -320,7 +340,17 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               </button>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              {/* Focus Mode Button */}
+              <button
+                onClick={toggleFocusMode}
+                aria-label="Focus Mode"
+                title="Focus Mode (F)"
+                className="text-muted-foreground hover:text-foreground transition p-2 rounded-lg hover:bg-muted"
+              >
+                <Target className="w-5 h-5" />
+              </button>
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
@@ -374,6 +404,24 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           if (!open && quickCaptureOpen) toggleQuickCapture();
         }}
       />
+
+      {/* Focus Mode */}
+      <FocusMode
+        tasks={tasks}
+        open={focusModeOpen}
+        onClose={toggleFocusMode}
+        onTaskComplete={(taskId, status) => {
+          if (currentWorkspace) {
+            updateTask(currentWorkspace.id, taskId, { status });
+          }
+        }}
+      />
+
+      {/* Keyboard Hints Modal */}
+      <KeyboardHints open={keyboardHintsOpen} onClose={toggleKeyboardHints} />
+
+      {/* Keyboard Hints Badge (shows briefly on first load) */}
+      <KeyboardHintsBadge onClick={toggleKeyboardHints} />
     </div>
   );
 }

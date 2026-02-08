@@ -175,6 +175,28 @@ const mockTask: Task = {
   needs_review: false,
 };
 
+const completedTask: Task = {
+  id: "task-2",
+  workspace_id: "ws-1",
+  title: "Completed task",
+  description: "A completed test task",
+  status: "done",
+  priority: "medium",
+  tags: [],
+  position: 0,
+  created_at: "2026-01-01",
+  updated_at: "2026-01-01",
+  assignee_id: null,
+  creator_id: "user-1",
+  project_id: null,
+  due_date: null,
+  completed_at: "2026-01-02",
+  source_type: "manual",
+  source_id: null,
+  confidence_score: null,
+  needs_review: false,
+};
+
 describe("Accessibility", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -257,5 +279,48 @@ describe("Accessibility", () => {
 
     const fab = await screen.findByLabelText("Create new task");
     expect(fab).toBeInTheDocument();
+  });
+
+  it("checkbox label for incomplete task says 'Mark complete'", () => {
+    render(<TaskItem task={mockTask} />);
+
+    const checkbox = screen.getByRole("checkbox");
+    expect(checkbox).toHaveAttribute(
+      "aria-label",
+      `Mark "${mockTask.title}" complete`,
+    );
+  });
+
+  it("checkbox label for completed task says 'completed, click to undo'", () => {
+    render(<TaskItem task={completedTask} />);
+
+    const checkbox = screen.getByRole("checkbox");
+    expect(checkbox).toHaveAttribute(
+      "aria-label",
+      `"${completedTask.title}" completed, click to undo`,
+    );
+  });
+
+  it("dialog components have proper ARIA structure", async () => {
+    // Test that our Dialog UI component exports DialogDescription
+    const DialogModule = await import("@/components/ui/dialog");
+    expect(DialogModule.DialogDescription).toBeDefined();
+    expect(DialogModule.DialogTitle).toBeDefined();
+  });
+
+  it("task list has proper list role for accessibility", async () => {
+    const { TaskList } = await import("@/components/tasks/task-list");
+
+    render(
+      <TaskList
+        tasks={[mockTask]}
+        onTaskClick={() => {}}
+        onTaskStatusChange={() => {}}
+        onTaskDelete={() => {}}
+      />,
+    );
+
+    const list = document.querySelector('[role="list"]');
+    expect(list).toBeTruthy();
   });
 });
