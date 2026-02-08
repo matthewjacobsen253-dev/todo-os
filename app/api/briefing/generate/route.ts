@@ -55,11 +55,15 @@ export async function POST(request: NextRequest) {
       ...DEFAULT_PREFERENCES,
     };
 
-    // Fetch active tasks for this workspace
+    // Fetch active tasks for this workspace (limit to 500 most recent for performance)
+    // Focus on non-done/cancelled tasks for the briefing
     const { data: tasks, error: tasksError } = await admin
       .from("tasks")
       .select("*")
-      .eq("workspace_id", workspace_id);
+      .eq("workspace_id", workspace_id)
+      .in("status", ["inbox", "todo", "in_progress", "waiting"])
+      .order("created_at", { ascending: false })
+      .limit(500);
 
     if (tasksError) {
       return NextResponse.json({ error: tasksError.message }, { status: 500 });

@@ -57,7 +57,16 @@ export async function GET() {
       }),
     );
 
-    return NextResponse.json({ data: workspacesWithRole });
+    // Add cache headers for better performance
+    // Workspaces change infrequently, so we can cache for 30 seconds
+    return NextResponse.json(
+      { data: workspacesWithRole },
+      {
+        headers: {
+          "Cache-Control": "private, max-age=30, stale-while-revalidate=60",
+        },
+      },
+    );
   } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Internal server error" },

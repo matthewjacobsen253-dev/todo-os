@@ -57,7 +57,9 @@ export function BriefingHistoryList({
                 <Calendar className="h-5 w-5 text-muted-foreground" />
               </div>
               <div>
-                <p className="text-sm font-medium">{formatDate(briefing.date)}</p>
+                <p className="text-sm font-medium">
+                  {formatDate(briefing.date)}
+                </p>
                 {briefing.content.summary && (
                   <div className="flex items-center gap-3 mt-1">
                     <span className="text-xs text-muted-foreground flex items-center gap-1">
@@ -79,11 +81,12 @@ export function BriefingHistoryList({
               </div>
             </div>
             <div className="flex items-center gap-2">
-              {briefing.content.overdue && briefing.content.overdue.length > 0 && (
-                <Badge variant="destructive" className="text-xs">
-                  {briefing.content.overdue.length} overdue
-                </Badge>
-              )}
+              {briefing.content.overdue &&
+                briefing.content.overdue.length > 0 && (
+                  <Badge variant="destructive" className="text-xs">
+                    {briefing.content.overdue.length} overdue
+                  </Badge>
+                )}
               {briefing.content.top_outcomes &&
                 briefing.content.top_outcomes.length > 0 && (
                   <Badge variant="secondary" className="text-xs">

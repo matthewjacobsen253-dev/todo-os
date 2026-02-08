@@ -46,9 +46,14 @@ describe("TopOutcomesSection", () => {
     expect(onClick).toHaveBeenCalledWith("t1");
   });
 
-  it("returns null when outcomes is empty", () => {
-    const { container } = render(<TopOutcomesSection outcomes={[]} />);
-    expect(container.firstChild).toBeNull();
+  it("shows encouraging message when outcomes is empty", () => {
+    render(<TopOutcomesSection outcomes={[]} />);
+    expect(
+      screen.getByText("No high-priority tasks for today."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Great time to work on longer-term goals!"),
+    ).toBeInTheDocument();
   });
 });
 
@@ -91,9 +96,11 @@ describe("OverdueSection", () => {
     );
   });
 
-  it("returns null when items is empty", () => {
-    const { container } = render(<OverdueSection items={[]} />);
-    expect(container.firstChild).toBeNull();
+  it("shows celebration message when items is empty", () => {
+    render(<OverdueSection items={[]} />);
+    expect(
+      screen.getByText("No overdue tasks — you're on track!"),
+    ).toBeInTheDocument();
   });
 });
 
@@ -164,9 +171,11 @@ describe("MustDoSection", () => {
     expect(screen.getByText("Must do task")).toBeInTheDocument();
   });
 
-  it("returns null when items is empty", () => {
-    const { container } = render(<MustDoSection items={[]} />);
-    expect(container.firstChild).toBeNull();
+  it("shows encouraging message when items is empty", () => {
+    render(<MustDoSection items={[]} />);
+    expect(
+      screen.getByText("Nothing urgent today. Enjoy your breathing room!"),
+    ).toBeInTheDocument();
   });
 });
 
@@ -185,9 +194,11 @@ describe("WaitingOnSection", () => {
     expect(screen.getByText("Bob's approval")).toBeInTheDocument();
   });
 
-  it("returns null when items is empty", () => {
-    const { container } = render(<WaitingOnSection items={[]} />);
-    expect(container.firstChild).toBeNull();
+  it("shows positive message when items is empty", () => {
+    render(<WaitingOnSection items={[]} />);
+    expect(
+      screen.getByText("No blockers — everything is in your hands"),
+    ).toBeInTheDocument();
   });
 });
 
@@ -199,7 +210,8 @@ describe("DeferSuggestionsSection", () => {
   it("renders defer suggestions with reasons", () => {
     render(<DeferSuggestionsSection items={items} />);
     expect(screen.getByText("Low priority task")).toBeInTheDocument();
-    expect(screen.getByText("Not due this week")).toBeInTheDocument();
+    // Using regex to match the reason text (rendered inside curly quotes)
+    expect(screen.getByText(/Not due this week/)).toBeInTheDocument();
   });
 
   it("returns null when items is empty", () => {

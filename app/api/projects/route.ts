@@ -40,11 +40,13 @@ export async function GET(request: NextRequest) {
     const taskCounts: Record<string, { total: number; completed: number }> = {};
 
     if (projectIds.length > 0) {
+      // Limit to 1000 tasks per project query for performance
       const { data: tasks } = await admin
         .from("tasks")
         .select("project_id, status")
         .eq("workspace_id", workspaceId)
-        .in("project_id", projectIds);
+        .in("project_id", projectIds)
+        .limit(1000);
 
       if (tasks) {
         for (const task of tasks) {
@@ -66,7 +68,15 @@ export async function GET(request: NextRequest) {
       completed_count: taskCounts[project.id]?.completed || 0,
     }));
 
-    return NextResponse.json({ data: projectsWithStats });
+    // Add cache headers - projects change infrequently
+    return NextResponse.json(
+      { data: projectsWithStats },
+      {
+        headers: {
+          "Cache-Control": "private, max-age=15, stale-while-revalidate=30",
+        },
+      },
+    );
   } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Internal server error" },

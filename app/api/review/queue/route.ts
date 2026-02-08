@@ -24,13 +24,17 @@ export async function GET(request: NextRequest) {
     }
 
     const admin = createAdminClient();
+
+    // Limit review queue to 50 items for performance
+    // Users can approve/reject to see more
     const { data, error } = await admin
       .from("tasks")
       .select("*, source:sources(*)")
       .eq("workspace_id", workspaceId)
       .eq("needs_review", true)
       .eq("source_type", "email")
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .limit(50);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
-import { X, Target, CheckCircle2, Sparkles, ChevronRight } from "lucide-react";
+import { X, Target, CheckCircle2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { Task, TaskStatus } from "@/types";

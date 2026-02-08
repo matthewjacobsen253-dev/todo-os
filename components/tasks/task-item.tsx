@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, memo } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -21,7 +21,11 @@ interface TaskItemProps {
   onDelete?: () => void;
 }
 
-export function TaskItem({
+/**
+ * TaskItem component - memoized for performance
+ * Only re-renders when task, project, or callback props change
+ */
+export const TaskItem = memo(function TaskItem({
   task,
   project,
   showProject = true,
@@ -81,7 +85,11 @@ export function TaskItem({
         <Checkbox
           checked={isDone || completing}
           onCheckedChange={handleCheckboxChange}
-          aria-label={`Mark "${task.title}" as ${isDone ? "incomplete" : "complete"}`}
+          aria-label={
+            isDone
+              ? `"${task.title}" completed, click to undo`
+              : `Mark "${task.title}" complete`
+          }
           className={cn(completing && "text-green-500 border-green-500")}
         />
       </div>
@@ -145,4 +153,7 @@ export function TaskItem({
       )}
     </div>
   );
-}
+});
+
+// Display name for React DevTools
+TaskItem.displayName = "TaskItem";

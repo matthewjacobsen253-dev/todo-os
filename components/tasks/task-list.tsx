@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, type ReactNode } from "react";
+import { useState, useMemo, useCallback, memo, type ReactNode } from "react";
 import { Inbox, ChevronDown, ChevronRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
@@ -182,7 +182,11 @@ function buildGroups(
   return [{ key: "all", label: "All", tasks }];
 }
 
-function GroupSection({
+/**
+ * GroupSection component - memoized for performance
+ * Renders a collapsible group of tasks
+ */
+const GroupSection = memo(function GroupSection({
   group,
   projects,
   defaultCollapsed = false,
@@ -258,7 +262,9 @@ function GroupSection({
       )}
     </section>
   );
-}
+});
+
+GroupSection.displayName = "GroupSection";
 
 export function TaskList({
   tasks,
@@ -302,19 +308,51 @@ export function TaskList({
     );
   }
 
+  // Keyboard navigation handler for flat list
+  const handleListKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const focusableItems = Array.from(
+      e.currentTarget.querySelectorAll('[role="button"][tabindex="0"]'),
+    ) as HTMLElement[];
+    const currentIndex = focusableItems.findIndex(
+      (el) => el === document.activeElement,
+    );
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      const nextIndex = Math.min(currentIndex + 1, focusableItems.length - 1);
+      focusableItems[nextIndex]?.focus();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      const prevIndex = Math.max(currentIndex - 1, 0);
+      focusableItems[prevIndex]?.focus();
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      focusableItems[0]?.focus();
+    } else if (e.key === "End") {
+      e.preventDefault();
+      focusableItems[focusableItems.length - 1]?.focus();
+    }
+  };
+
   // Flat list when no grouping
   if (groupByField === "none") {
     return (
-      <div className="space-y-2">
+      <div
+        className="space-y-2"
+        role="list"
+        aria-label="Task list"
+        onKeyDown={handleListKeyDown}
+      >
         {tasks.map((task) => (
-          <TaskItem
-            key={task.id}
-            task={task}
-            project={projectMap.get(task.project_id || "")}
-            onClick={() => onTaskClick(task.id)}
-            onStatusChange={(status) => onTaskStatusChange(task.id, status)}
-            onDelete={() => onTaskDelete(task.id)}
-          />
+          <div key={task.id} role="listitem">
+            <TaskItem
+              task={task}
+              project={projectMap.get(task.project_id || "")}
+              onClick={() => onTaskClick(task.id)}
+              onStatusChange={(status) => onTaskStatusChange(task.id, status)}
+              onDelete={() => onTaskDelete(task.id)}
+            />
+          </div>
         ))}
       </div>
     );
