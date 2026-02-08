@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { checkWorkspaceAccess } from "@/lib/auth/workspace-guard";
 
 export async function GET(request: NextRequest) {
   try {
@@ -22,6 +23,12 @@ export async function GET(request: NextRequest) {
         { error: "workspace_id is required" },
         { status: 400 },
       );
+    }
+
+    // Verify user has access to this workspace
+    const accessCheck = await checkWorkspaceAccess(user.id, workspaceId);
+    if (!accessCheck.allowed) {
+      return NextResponse.json({ error: accessCheck.error }, { status: 403 });
     }
 
     const admin = createAdminClient();

@@ -36,6 +36,16 @@ vi.mock("@/lib/claude/briefing-generator", () => ({
   }),
 }));
 
+// Mock workspace access - allow by default
+vi.mock("@/lib/auth/workspace-guard", () => ({
+  checkWorkspaceAccess: vi.fn().mockResolvedValue({
+    allowed: true,
+    access: { role: "member" },
+  }),
+  verifyWorkspaceAccess: vi.fn().mockResolvedValue({ role: "member" }),
+  requireWorkspaceAccess: vi.fn().mockResolvedValue({ role: "member" }),
+}));
+
 describe("Briefing API Routes", () => {
   beforeEach(() => {
     vi.clearAllMocks();
