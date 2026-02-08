@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, memo, type ReactNode } from "react";
+import { useState, useMemo, memo, type ReactNode } from "react";
 import { Inbox, ChevronDown, ChevronRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
