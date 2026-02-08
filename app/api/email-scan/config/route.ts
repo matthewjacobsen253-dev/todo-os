@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function PATCH(request: NextRequest) {
   try {
@@ -65,7 +66,9 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
-    const { data, error } = await supabase
+    const admin = createAdminClient();
+
+    const { data, error } = await admin
       .from("email_scan_configs")
       .update(sanitizedUpdates)
       .eq("workspace_id", workspace_id)

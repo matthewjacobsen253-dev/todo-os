@@ -19,6 +19,20 @@ export type TaskPriority = "urgent" | "high" | "medium" | "low" | "none";
 
 export type TaskSourceType = "manual" | "email" | "meeting" | "briefing";
 
+export type TaskGroupBy =
+  | "none"
+  | "project"
+  | "priority"
+  | "status"
+  | "due_date";
+export type TaskSortField =
+  | "priority"
+  | "due_date"
+  | "status"
+  | "created_at"
+  | "title";
+export type SortDirection = "asc" | "desc";
+
 export type WorkspaceRole = "owner" | "admin" | "member";
 
 export type ProjectStatus = "active" | "archived";
@@ -132,6 +146,8 @@ export interface Source {
 
 /**
  * Task - the core entity of the application
+ * Note: Tags are stored via task_tags junction table, not on the tasks table directly.
+ * The tags field is optional and only populated when joined with task_tags.
  */
 export interface Task {
   id: string;
@@ -148,7 +164,7 @@ export interface Task {
   source_id: string | null;
   confidence_score: number | null;
   needs_review: boolean;
-  tags: string[];
+  tags?: string[]; // Optional - populated from task_tags junction table when needed
   position: number;
   completed_at: string | null;
   created_at: string;

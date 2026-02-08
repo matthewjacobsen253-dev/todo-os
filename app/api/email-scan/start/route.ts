@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { inngest } from "@/lib/inngest/client";
 
 export async function POST(request: NextRequest) {
@@ -23,8 +24,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const admin = createAdminClient();
+
     // Verify config exists
-    const { data: config, error: configError } = await supabase
+    const { data: config, error: configError } = await admin
       .from("email_scan_configs")
       .select("id, enabled")
       .eq("workspace_id", workspace_id)

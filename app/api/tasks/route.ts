@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import type { TaskStatus } from "@/types";
 
 export async function GET(request: NextRequest) {
@@ -26,7 +27,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    let query = supabase
+    const admin = createAdminClient();
+    let query = admin
       .from("tasks")
       .select("*", { count: "exact" })
       .eq("workspace_id", workspaceId)
@@ -64,15 +66,8 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const {
-      workspace_id,
-      title,
-      description,
-      priority,
-      due_date,
-      project_id,
-      tags,
-    } = body;
+    const { workspace_id, title, description, priority, due_date, project_id } =
+      body;
 
     if (!workspace_id) {
       return NextResponse.json(
@@ -98,11 +93,11 @@ export async function POST(request: NextRequest) {
       source_id: null,
       confidence_score: null,
       needs_review: false,
-      tags: tags || [],
       position: 0,
     };
 
-    const { data, error } = await supabase
+    const admin = createAdminClient();
+    const { data, error } = await admin
       .from("tasks")
       .insert([taskData])
       .select()

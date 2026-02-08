@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import type { EmailConnectionStatus } from "@/types";
 
 export async function GET(request: NextRequest) {
@@ -23,8 +24,10 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    const admin = createAdminClient();
+
     // Get scan config
-    const { data: config } = await supabase
+    const { data: config } = await admin
       .from("email_scan_configs")
       .select("id, provider, enabled, last_scan_at, email_address")
       .eq("workspace_id", workspaceId)
@@ -50,7 +53,7 @@ export async function GET(request: NextRequest) {
         };
 
     // Get recent scan logs
-    const { data: logs } = await supabase
+    const { data: logs } = await admin
       .from("email_scan_logs")
       .select("*")
       .eq("workspace_id", workspaceId)

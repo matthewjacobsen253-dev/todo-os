@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function GET(
   _request: NextRequest,
@@ -16,7 +17,8 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { data, error } = await supabase
+    const admin = createAdminClient();
+    const { data, error } = await admin
       .from("tasks")
       .select("*")
       .eq("id", id)
@@ -56,12 +58,14 @@ export async function PATCH(
     const body = await request.json();
     const updates = { ...body };
 
+    const admin = createAdminClient();
+
     // Handle completed_at based on status transitions
     if (updates.status === "done") {
       updates.completed_at = new Date().toISOString();
     } else if (updates.status && updates.status !== "done") {
       // If moving away from done, clear completed_at
-      const { data: existingTask } = await supabase
+      const { data: existingTask } = await admin
         .from("tasks")
         .select("status")
         .eq("id", id)
@@ -72,7 +76,7 @@ export async function PATCH(
       }
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await admin
       .from("tasks")
       .update(updates)
       .eq("id", id)
@@ -110,7 +114,8 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { error } = await supabase.from("tasks").delete().eq("id", id);
+    const admin = createAdminClient();
+    const { error } = await admin.from("tasks").delete().eq("id", id);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function POST(
   request: NextRequest,
@@ -26,8 +27,10 @@ export async function POST(
       );
     }
 
+    const admin = createAdminClient();
+
     // Verify task exists
-    const { data: task, error: fetchError } = await supabase
+    const { data: task, error: fetchError } = await admin
       .from("tasks")
       .select("id, title, needs_review")
       .eq("id", id)
@@ -39,7 +42,7 @@ export async function POST(
     }
 
     // Delete the task
-    const { error } = await supabase
+    const { error } = await admin
       .from("tasks")
       .delete()
       .eq("id", id)
@@ -50,7 +53,7 @@ export async function POST(
     }
 
     // Log audit entry
-    await supabase.from("audit_logs").insert({
+    await admin.from("audit_logs").insert({
       workspace_id,
       entity_type: "task",
       entity_id: id,

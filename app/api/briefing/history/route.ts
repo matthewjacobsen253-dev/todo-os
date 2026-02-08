@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function GET(request: NextRequest) {
   try {
@@ -25,7 +26,9 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const { data, error, count } = await supabase
+    const admin = createAdminClient();
+
+    const { data, error, count } = await admin
       .from("briefings")
       .select("*", { count: "exact" })
       .eq("workspace_id", workspaceId)

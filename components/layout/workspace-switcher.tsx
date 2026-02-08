@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ChevronDown, Plus, Building2 } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
-import { useCurrentWorkspace, useStore } from "@/store";
+import { useCurrentWorkspace, useStore, useWorkspaceActions } from "@/store";
 import type { WorkspaceWithRole } from "@/types";
 import {
   DropdownMenu,
@@ -16,58 +15,21 @@ import {
 import { WorkspaceCreateDialog } from "./workspace-create-dialog";
 
 export function WorkspaceSwitcher() {
-  const [workspaces, setWorkspaces] = useState<WorkspaceWithRole[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const currentWorkspace = useCurrentWorkspace();
-
-  const setCurrentWorkspace = (ws: WorkspaceWithRole) => {
-    useStore.getState().setCurrentWorkspace(ws);
-  };
+  const { fetchWorkspaces } = useWorkspaceActions();
+  const workspaces = useStore((state) => state.workspaces);
+  const workspaceLoading = useStore((state) => state.workspaceLoading);
 
   useEffect(() => {
-    loadWorkspaces();
+    fetchWorkspaces();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const loadWorkspaces = async () => {
-    try {
-      setIsLoading(true);
-      const supabase = createClient();
-
-      const { data, error } = await supabase
-        .from("workspaces")
-        .select("*")
-        .order("created_at", { ascending: true });
-
-      if (error) {
-        return;
-      }
-
-      const withRole: WorkspaceWithRole[] = (data || []).map((ws) => ({
-        ...ws,
-        role: "owner" as const,
-        member_count: 1,
-      }));
-
-      setWorkspaces(withRole);
-
-      // Set first workspace as current if none selected
-      if (!useStore.getState().currentWorkspace && withRole.length > 0) {
-        setCurrentWorkspace(withRole[0]);
-      }
-    } catch {
-      // Silently ignore — workspace load on mount is non-critical
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleSwitchWorkspace = (workspace: WorkspaceWithRole) => {
-    setCurrentWorkspace(workspace);
-    window.dispatchEvent(
-      new CustomEvent("workspace-changed", { detail: workspace }),
-    );
+    useStore.getState().setCurrentWorkspace(workspace);
+    // Persist selection
+    localStorage.setItem("todo-os-workspace-id", workspace.id);
   };
 
   const handleWorkspaceCreated = (workspace: {
@@ -88,8 +50,10 @@ export function WorkspaceSwitcher() {
       role: "owner",
       member_count: 1,
     };
-    setWorkspaces([...workspaces, full]);
-    setCurrentWorkspace(full);
+    useStore.getState().setCurrentWorkspace(full);
+    localStorage.setItem("todo-os-workspace-id", full.id);
+    // Re-fetch to include the new workspace in the list
+    fetchWorkspaces();
     setIsCreateOpen(false);
   };
 
@@ -106,7 +70,7 @@ export function WorkspaceSwitcher() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-white truncate">
-                {isLoading
+                {workspaceLoading
                   ? "Loading..."
                   : currentWorkspace?.name || "Select workspace"}
               </p>

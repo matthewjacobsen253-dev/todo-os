@@ -2,7 +2,12 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -224,7 +229,11 @@ export const SearchCommand: React.FC<SearchCommandProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="overflow-hidden p-0 shadow-lg">
+      <DialogContent
+        className="overflow-hidden p-0 shadow-lg"
+        aria-describedby={undefined}
+      >
+        <DialogTitle className="sr-only">Search</DialogTitle>
         <div className="flex flex-col h-screen sm:h-auto">
           {/* Search Input */}
           <div className="flex items-center border-b border-border px-4 py-3">

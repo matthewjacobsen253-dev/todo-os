@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 const DEFAULTS = {
   delivery_time: "08:00",
@@ -31,7 +32,9 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const { data, error } = await supabase
+    const admin = createAdminClient();
+
+    const { data, error } = await admin
       .from("briefing_preferences")
       .select("*")
       .eq("workspace_id", workspaceId)
@@ -88,6 +91,8 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    const admin = createAdminClient();
+
     const updates: Record<string, unknown> = {};
     if (delivery_time !== undefined) updates.delivery_time = delivery_time;
     if (timezone !== undefined) updates.timezone = timezone;
@@ -95,7 +100,7 @@ export async function PUT(request: NextRequest) {
     if (include_email !== undefined) updates.include_email = include_email;
     if (filters !== undefined) updates.filters = filters;
 
-    const { data, error } = await supabase
+    const { data, error } = await admin
       .from("briefing_preferences")
       .upsert(
         {

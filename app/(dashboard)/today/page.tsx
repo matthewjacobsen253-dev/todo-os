@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { format } from "date-fns";
 import {
   AlertCircle,
@@ -15,7 +15,15 @@ import { TaskList } from "@/components/tasks";
 import { TaskDetailSidebar } from "@/components/tasks/task-detail-sidebar";
 import { useTasksWithSync } from "@/hooks/useTasks";
 import { useUI, useUIActions } from "@/store";
-import { categorizeTodayTasks } from "@/lib/utils";
+import { categorizeTodayTasks, cn } from "@/lib/utils";
+
+const MOTIVATIONAL_MESSAGES = [
+  "Enjoy the extra headroom!",
+  "A clear day is a productive day.",
+  "Time for deep work or a well-deserved break.",
+  "No fires to fight today.",
+  "Your future self thanks you.",
+];
 
 export default function TodayPage() {
   const { tasks, loading, changeTaskStatus, deleteTask } = useTasksWithSync();
@@ -33,6 +41,23 @@ export default function TodayPage() {
     dueToday.length === 0 &&
     completedToday.length === 0;
 
+  // Progress bar calculations
+  const totalTodayTasks = totalCount + completedToday.length;
+  const doneCount = completedToday.length;
+  const progressPct =
+    totalTodayTasks > 0 ? (doneCount / totalTodayTasks) * 100 : 0;
+  const progressColor =
+    progressPct >= 100
+      ? "bg-green-500"
+      : progressPct >= 50
+        ? "bg-blue-500"
+        : "bg-amber-500";
+
+  const motivationalMsg = useMemo(() => {
+    const idx = new Date().getDate() % MOTIVATIONAL_MESSAGES.length;
+    return MOTIVATIONAL_MESSAGES[idx];
+  }, []);
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -49,6 +74,27 @@ export default function TodayPage() {
         </p>
       </div>
 
+      {/* Progress bar */}
+      {totalTodayTasks > 0 && (
+        <div className="space-y-1.5" data-testid="progress-bar">
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <span>
+              {doneCount}/{totalTodayTasks} done
+            </span>
+            <span>{Math.round(progressPct)}%</span>
+          </div>
+          <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+            <div
+              className={cn(
+                "h-full rounded-full transition-all duration-500",
+                progressColor,
+              )}
+              style={{ width: `${progressPct}%` }}
+            />
+          </div>
+        </div>
+      )}
+
       {isEmpty && (
         <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
           <CircleCheck className="h-12 w-12 mb-4 text-green-500" />
@@ -56,6 +102,7 @@ export default function TodayPage() {
             You&apos;re all caught up!
           </p>
           <p className="text-sm">No tasks due today or overdue.</p>
+          <p className="text-xs mt-1">{motivationalMsg}</p>
         </div>
       )}
 

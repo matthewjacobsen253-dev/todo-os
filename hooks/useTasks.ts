@@ -60,7 +60,8 @@ export const useTasksWithSync = () => {
         source_id: null,
         confidence_score: null,
         needs_review: false,
-        tags: input.tags || [],
+        // Note: tags are stored via task_tags junction table, not on the task itself
+        tags: input.tags,
         position: tasks.length + 1,
         completed_at: null,
         created_at: new Date().toISOString(),

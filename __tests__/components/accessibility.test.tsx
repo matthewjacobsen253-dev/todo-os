@@ -67,21 +67,45 @@ vi.mock("@/store", async (importOriginal) => {
       fetchWorkspaces: vi.fn(),
       createWorkspace: vi.fn(),
     }),
-    useStore: Object.assign(() => null, {
-      getState: () => ({
-        currentWorkspace: {
-          id: "ws-1",
-          name: "Test",
-          slug: "test",
-          owner_id: "user-1",
-          created_at: "2026-01-01",
-          settings: {},
-          role: "owner",
-          member_count: 1,
-        },
-        setCurrentWorkspace: vi.fn(),
-      }),
-    }),
+    useStore: Object.assign(
+      (selector?: (state: Record<string, unknown>) => unknown) => {
+        const state = {
+          currentWorkspace: {
+            id: "ws-1",
+            name: "Test",
+            slug: "test",
+            owner_id: "user-1",
+            created_at: "2026-01-01",
+            settings: {},
+            role: "owner",
+            member_count: 1,
+          },
+          workspaces: [],
+          workspaceLoading: false,
+          setCurrentWorkspace: vi.fn(),
+          fetchWorkspaces: vi.fn(),
+        };
+        return selector ? selector(state) : state;
+      },
+      {
+        getState: () => ({
+          currentWorkspace: {
+            id: "ws-1",
+            name: "Test",
+            slug: "test",
+            owner_id: "user-1",
+            created_at: "2026-01-01",
+            settings: {},
+            role: "owner",
+            member_count: 1,
+          },
+          workspaces: [],
+          workspaceLoading: false,
+          setCurrentWorkspace: vi.fn(),
+          fetchWorkspaces: vi.fn(),
+        }),
+      },
+    ),
   };
 });
 

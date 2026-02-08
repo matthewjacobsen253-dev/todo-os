@@ -1,0 +1,669 @@
+[
+  {
+    "message_id": "msg_001_pinnacle_checklist",
+    "thread_id": "thread_001_pinnacle_launch",
+    "from_name": "Mara Osei",
+    "from_email": "mara@luminaworks.co",
+    "to_emails": [
+      "jalen@luminaworks.co",
+      "priya@luminaworks.co",
+      "ravi@luminaworks.co",
+      "elena@luminaworks.co",
+      "leo@luminaworks.co",
+      "tomas@luminaworks.co",
+      "diego@luminaworks.co",
+      "ben@luminaworks.co",
+      "suki@luminaworks.co",
+      "amira@luminaworks.co"
+    ],
+    "cc_emails": [],
+    "subject": "Pinnacle Launch — final checklist before Feb 14 go-live",
+    "body_text": "Team,\n\nWe're one week out from the Pinnacle Launch go-live on February 14. I want to make sure nothing falls through the cracks. Here's what still needs to happen:\n\n• Finalize the landing page copy and get it deployed to production\n• Complete the payment integration testing with Stripe sandbox\n• Prepare the press release draft and send to me for review\n• Set up monitoring and alerting dashboards for launch-day traffic\n\nEveryone owns a piece of this — let's make sure it all lands by Feb 14. Ping me if anything is blocked.\n\nBest,\nMara",
+    "received_datetime": "2026-02-05T09:12:00Z",
+    "labels": ["INBOX", "IMPORTANT"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_002_pinnacle_backend_done",
+    "thread_id": "thread_001_pinnacle_launch",
+    "from_name": "Priya Nair",
+    "from_email": "priya@luminaworks.co",
+    "to_emails": ["mara@luminaworks.co"],
+    "cc_emails": ["leo@luminaworks.co"],
+    "subject": "Re: Pinnacle Launch — final checklist before Feb 14 go-live",
+    "body_text": "Mara,\n\nGood news — the backend API is done and fully tested. All endpoints are passing CI. However, I'm still waiting on the final design assets from Leo for the landing page hero section. I can't deploy the landing page until those are in.\n\nLeo — can you let me know when those will be ready? I need at least a day to integrate and QA after I receive them.\n\nThanks,\nPriya",
+    "received_datetime": "2026-02-05T10:34:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_003_pinnacle_assets",
+    "thread_id": "thread_001_pinnacle_launch",
+    "from_name": "Leo Park",
+    "from_email": "leo@luminaworks.co",
+    "to_emails": ["priya@luminaworks.co", "mara@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "Re: Pinnacle Launch — final checklist before Feb 14 go-live",
+    "body_text": "Hey Priya,\n\nSorry for the delay on this. I'm wrapping up the hero illustration and the icon set now. Assets are uploading to the shared drive — should be ready by EOD tomorrow.\n\nI'll ping you in Slack once everything is in the Figma handoff.\n\nLeo",
+    "received_datetime": "2026-02-05T11:15:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_004_pinnacle_analytics",
+    "thread_id": "thread_004_pinnacle_analytics",
+    "from_name": "Ravi Menon",
+    "from_email": "ravi@luminaworks.co",
+    "to_emails": [
+      "priya@luminaworks.co",
+      "tomas@luminaworks.co",
+      "leo@luminaworks.co"
+    ],
+    "cc_emails": [],
+    "subject": "PL — analytics tracking codes needed",
+    "body_text": "Hey team,\n\nQuick one — we need to get the analytics tracking codes embedded on all Pinnacle launch pages before go-live. GA4 + Mixpanel. Can someone grab this?\n\nThanks,\nRavi",
+    "received_datetime": "2026-02-05T14:22:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_005_pinnacle_blog",
+    "thread_id": "thread_005_pinnacle_blog",
+    "from_name": "Mara Osei",
+    "from_email": "mara@luminaworks.co",
+    "to_emails": ["ben@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "Can you draft the launch blog post for Pinnacle by next Wednesday?",
+    "body_text": "Hey Ben,\n\nI'd like you to take a first pass at the launch blog post for Pinnacle. It should cover the key features, the problem we're solving, and a brief customer quote (I'll send you the quote separately).\n\nCan you have a draft ready by next Wednesday (Feb 11)? Doesn't need to be perfect — just a solid first draft we can iterate on.\n\nThanks!\nMara",
+    "received_datetime": "2026-02-05T15:45:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_006_greenfield_site_visit",
+    "thread_id": "thread_006_greenfield_site",
+    "from_name": "Jalen Torres",
+    "from_email": "jalen@luminaworks.co",
+    "to_emails": [
+      "mara@luminaworks.co",
+      "diego@luminaworks.co",
+      "suki@luminaworks.co",
+      "amira@luminaworks.co"
+    ],
+    "cc_emails": [],
+    "subject": "GF expansion — site visit scheduled for Feb 20",
+    "body_text": "Team,\n\nJust confirmed — the site visit to the Ridgemont location is locked in for February 20. Diego and I will be on-site with their facilities team.\n\nBefore we go, I need someone to prepare a site assessment document covering zoning requirements, estimated buildout costs, and utility infrastructure. Suki, can you take point on this? Would be great to have it by Feb 18 so we can review before the visit.\n\nLet me know if there are any scheduling conflicts.\n\nJalen",
+    "received_datetime": "2026-02-05T08:30:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_007_greenfield_ridgemont",
+    "thread_id": "thread_007_greenfield_contract",
+    "from_name": "Diego Fuentes",
+    "from_email": "diego@luminaworks.co",
+    "to_emails": ["jalen@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "Got verbal commitment from Ridgemont Properties — need contract drafted",
+    "body_text": "Jalen,\n\nJust got off the phone with Marcus at Ridgemont. They're in — verbal commitment for the 10-year lease at the terms we discussed. He wants to see a draft contract by end of next week so their legal team can review.\n\nCan we get Amira on this ASAP? I don't want to lose momentum.\n\nDiego",
+    "received_datetime": "2026-02-05T16:10:00Z",
+    "labels": ["INBOX", "IMPORTANT"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_008_greenfield_contract_reply",
+    "thread_id": "thread_007_greenfield_contract",
+    "from_name": "Amira Hassan",
+    "from_email": "amira@luminaworks.co",
+    "to_emails": ["jalen@luminaworks.co", "diego@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "Re: Got verbal commitment from Ridgemont Properties — need contract drafted",
+    "body_text": "Jalen, Diego,\n\nGreat news on Ridgemont. I'll have the contract ready by end of next week — I already have the template from our previous commercial leases so it should be straightforward.\n\nI'll send a draft for your review before it goes to their side.\n\nAmira",
+    "received_datetime": "2026-02-05T17:02:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_009_greenfield_budget",
+    "thread_id": "thread_009_greenfield_budget",
+    "from_name": "Suki Tanaka",
+    "from_email": "suki@luminaworks.co",
+    "to_emails": ["jalen@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "Green field — budget approval needed for Q2 capex",
+    "body_text": "Jalen,\n\nI've put together the Q2 capital expenditure forecast for the Green field expansion. Total comes to $2.4M, which is within the board-approved range but we still need your formal sign-off before I can release the funds.\n\nI've attached the breakdown spreadsheet. Can you review and approve by Feb 12? Finance needs to process the first tranche before month-end.\n\nThanks,\nSuki",
+    "received_datetime": "2026-02-06T09:45:00Z",
+    "labels": ["INBOX"],
+    "attachments": [
+      {
+        "filename": "GF_Q2_Capex_Forecast.xlsx",
+        "mimetype": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "description": "Q2 capital expenditure forecast for Greenfield Expansion — includes line items for construction, equipment, permits, and contingency"
+      }
+    ]
+  },
+  {
+    "message_id": "msg_010_greenfield_fwd",
+    "thread_id": "thread_010_greenfield_timeline",
+    "from_name": "Jalen Torres",
+    "from_email": "jalen@luminaworks.co",
+    "to_emails": ["mara@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "FWD: Greenfield expansion — revised timeline",
+    "body_text": "Mara,\n\nFYI — forwarding the latest from the Greenfield team. Everything is on track but we've had to push a couple of milestones by two weeks due to the permitting delay.\n\nI need your sign-off on the revised timeline so we can update the board deck. Can you take a look at the attached and let me know by Thursday?\n\n---------- Forwarded message ----------\nFrom: Diego Fuentes\nDate: Feb 4, 2026\nSubject: Greenfield expansion — revised timeline\n\nJalen — here's the updated project plan reflecting the permitting pushback. Key dates shifted are Phase 2 buildout (now March 15) and initial occupancy (now April 1).\n\nDiego",
+    "received_datetime": "2026-02-06T10:20:00Z",
+    "labels": ["INBOX", "IMPORTANT"],
+    "attachments": [
+      {
+        "filename": "Greenfield_Revised_Timeline_v3.pdf",
+        "mimetype": "application/pdf",
+        "description": "Revised project timeline for Greenfield Expansion with updated milestone dates"
+      }
+    ]
+  },
+  {
+    "message_id": "msg_011_atlas_qa",
+    "thread_id": "thread_011_atlas_qa",
+    "from_name": "Priya Nair",
+    "from_email": "priya@luminaworks.co",
+    "to_emails": [
+      "tomas@luminaworks.co",
+      "ravi@luminaworks.co",
+      "ben@luminaworks.co"
+    ],
+    "cc_emails": [],
+    "subject": "Atlas CRM migration — data mapping complete, need QA signoff",
+    "body_text": "Team,\n\nThe data mapping phase for the Atlas CRM migration is now complete. All 47 entity types have been mapped from the legacy schema to the new CRM structure.\n\nI need someone from QA to review the mapping document and sign off before we proceed to the actual data transfer. This is a blocker for the next phase.\n\nThe mapping doc is in Confluence under Atlas > Technical Docs > Data Mapping v2.\n\nPriya",
+    "received_datetime": "2026-02-04T11:00:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_012_atlas_staging",
+    "thread_id": "thread_011_atlas_qa",
+    "from_name": "Tomas Lindgren",
+    "from_email": "tomas@luminaworks.co",
+    "to_emails": ["priya@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "Re: atlas crm — staging environment is ready, running load tests tonight",
+    "body_text": "Priya,\n\nStaging environment is spun up and mirroring prod config. I'm kicking off load tests tonight around 10pm so we can see how the new schema handles concurrent reads/writes.\n\nResults should be in by morning — I'll share the report in the #atlas-migration channel.\n\nTomas",
+    "received_datetime": "2026-02-04T14:30:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_013_atlas_question",
+    "thread_id": "thread_013_atlas_fields",
+    "from_name": "Ben Archer",
+    "from_email": "ben@luminaworks.co",
+    "to_emails": ["priya@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "Quick question about the Atals migration — which fields map to the legacy contact table?",
+    "body_text": "Hey Priya,\n\nI'm working on the data validation scripts for the Atals migration and I'm a bit confused about the legacy contact table. Specifically:\n\n- Does `contact_primary_email` map to `email_address` or `primary_email` in the new schema?\n- What happens to the `contact_notes` field? I don't see a corresponding column.\n- Are we preserving the `created_by` audit trail?\n\nThanks for any pointers!\nBen",
+    "received_datetime": "2026-02-04T15:45:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_014_atlas_answer",
+    "thread_id": "thread_013_atlas_fields",
+    "from_name": "Priya Nair",
+    "from_email": "priya@luminaworks.co",
+    "to_emails": ["ben@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "Re: Quick question about the Atals migration — which fields map to the legacy contact table?",
+    "body_text": "Ben,\n\nGood questions. Here's the breakdown:\n\n- `contact_primary_email` → `email_address` (the `primary_email` field is deprecated)\n- `contact_notes` → `notes_text` in the new `contact_metadata` table\n- `created_by` is preserved in the `audit_trail` table with a foreign key back to the contact record\n\nPlease update the mapping doc in Confluence with these changes so it stays current. The doc is under Atlas > Technical Docs > Data Mapping v2.\n\nThanks,\nPriya",
+    "received_datetime": "2026-02-04T16:20:00Z",
+    "labels": ["INBOX", "SENT"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_015_atlas_uat",
+    "thread_id": "thread_015_atlas_uat",
+    "from_name": "Ravi Menon",
+    "from_email": "ravi@luminaworks.co",
+    "to_emails": ["priya@luminaworks.co", "tomas@luminaworks.co"],
+    "cc_emails": ["ben@luminaworks.co"],
+    "subject": "CRM migration — user acceptance testing plan",
+    "body_text": "Priya, Tomas,\n\nHere's the UAT plan for the CRM migration. We need to validate these three scenarios before we can go live:\n\n• Test bulk contact import (10k+ records) and verify all fields map correctly with no data loss\n• Validate that existing automations and workflows still trigger correctly after migration\n• Run end-to-end test of the reporting pipeline to ensure historical data is queryable in the new schema\n\nI'd like to have all three completed by Feb 19. Let me know if that timeline works or if we need to adjust.\n\nRavi",
+    "received_datetime": "2026-02-05T09:00:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_016_atlas_eta",
+    "thread_id": "thread_016_atlas_board",
+    "from_name": "Mara Osei",
+    "from_email": "mara@luminaworks.co",
+    "to_emails": ["priya@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "What's the ETA on the migration? Board meeting is Feb 28",
+    "body_text": "Priya,\n\nThe board meeting is on February 28 and I need to give them a status update on the Atlas CRM migration. Where do we stand? Are we still on track for the original timeline?\n\nCan you put together a brief status summary I can include in the board deck? Doesn't need to be long — just current phase, % complete, key risks, and projected completion date.\n\nThanks,\nMara",
+    "received_datetime": "2026-02-06T08:15:00Z",
+    "labels": ["INBOX", "IMPORTANT"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_017_horizon_requirements",
+    "thread_id": "thread_017_horizon_dash",
+    "from_name": "Ravi Menon",
+    "from_email": "ravi@luminaworks.co",
+    "to_emails": [
+      "priya@luminaworks.co",
+      "tomas@luminaworks.co",
+      "leo@luminaworks.co",
+      "elena@luminaworks.co"
+    ],
+    "cc_emails": [],
+    "subject": "Horizon Analytics — Q1 dashboard requirements",
+    "body_text": "Team,\n\nHere are the Q1 requirements for the Horizon Analytics dashboard. We need all of these in place before the March board review:\n\n• Build real-time revenue tracking widget with daily/weekly/monthly toggle\n• Implement user engagement funnel visualization (signup → activation → retention)\n• Create executive summary view with auto-generated insights using AI\n• Add cohort analysis module with customizable date ranges and segments\n• Integrate external data source connector for Google Analytics and Mixpanel\n\nLet me know effort estimates when you can. Ideally we'd have at least the first three done by end of February.\n\nRavi",
+    "received_datetime": "2026-02-04T10:00:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_018_horizon_timeline",
+    "thread_id": "thread_017_horizon_dash",
+    "from_name": "Priya Nair",
+    "from_email": "priya@luminaworks.co",
+    "to_emails": ["ravi@luminaworks.co"],
+    "cc_emails": ["tomas@luminaworks.co"],
+    "subject": "Re: HA — we can do items 1-3 by Feb 21, items 4-5 will need to wait for the infra upgrade",
+    "body_text": "Ravi,\n\nLooked at the requirements with the eng team. Here's where we net out:\n\n- Items 1-3 (revenue widget, funnel viz, executive summary): We can deliver these by Feb 21. Already have the data pipelines in place.\n- Items 4-5 (cohort analysis, external connectors): These depend on the new Redshift cluster that Tomas is provisioning as part of the Quantum infra upgrade. We won't have the compute capacity on current infra. Realistically these land in mid-March.\n\nI'll schedule items 4-5 to start immediately after the Quantum migration window closes on Feb 23.\n\nPriya",
+    "received_datetime": "2026-02-04T14:15:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_019_horizon_marketing",
+    "thread_id": "thread_019_horizon_marketing",
+    "from_name": "Elena Voss",
+    "from_email": "elena@luminaworks.co",
+    "to_emails": ["ravi@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "horizion analytics — can we get a marketing attribution view?",
+    "body_text": "Hey Ravi,\n\nI know you've got the Horizon dashboard requirements locked in, but I wanted to float a request from the marketing team. We really need a marketing attribution view that shows which campaigns are driving conversions, broken down by channel (paid, organic, email, social).\n\nThis would save us hours of manual spreadsheet work every week. Is there any chance we can squeeze this into the Q1 roadmap? Happy to provide the detailed requirements if it makes the cut.\n\nThanks,\nElena",
+    "received_datetime": "2026-02-05T11:30:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_020_horizon_redshift",
+    "thread_id": "thread_020_horizon_infra",
+    "from_name": "Tomas Lindgren",
+    "from_email": "tomas@luminaworks.co",
+    "to_emails": ["priya@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "Analytics platform — need to provision new Redshift cluster before Feb 15",
+    "body_text": "Priya,\n\nHeads up — if we want the Horizon analytics data warehouse to handle the Q1 load, I need to provision the new Redshift cluster by February 15. After that date, we risk data pipeline disruptions during peak query times.\n\nI need the following to proceed:\n- AWS account access approval (waiting on Suki for budget confirmation)\n- Final cluster sizing specs from your team\n\nCan you get me the sizing specs by Feb 12 so I have runway to set everything up?\n\nTomas",
+    "received_datetime": "2026-02-05T13:00:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_021_newsletter_spam",
+    "thread_id": "thread_021_newsletter",
+    "from_name": "Data Insights Weekly",
+    "from_email": "datainsights-weekly@newsletters.io",
+    "to_emails": ["ravi@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "This Week in Data: Top 10 Dashboard Design Patterns",
+    "body_text": "DATA INSIGHTS WEEKLY — Issue #247\n\nHi Ravi,\n\nThis week's top stories:\n\n1. Top 10 Dashboard Design Patterns for 2026\n2. How Netflix Rebuilt Their Analytics Stack\n3. The Rise of Real-Time Data Mesh Architectures\n4. Tutorial: Building Streaming Dashboards with Apache Flink\n5. Interview: Chief Data Officer at Salesforce on AI-Powered Insights\n\nRead more at datainsightsweekly.io\n\nYou're receiving this because you subscribed to Data Insights Weekly.\nUnsubscribe | Manage preferences",
+    "received_datetime": "2026-02-06T06:00:00Z",
+    "labels": ["INBOX", "CATEGORY_PROMOTIONS"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_022_horizon_mockup",
+    "thread_id": "thread_022_horizon_design",
+    "from_name": "Ravi Menon",
+    "from_email": "ravi@luminaworks.co",
+    "to_emails": ["leo@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "Can you mock up the Horizon dashboard layout? No rush, whenever you get a chance",
+    "body_text": "Hey Leo,\n\nWhen you have some bandwidth, could you put together a quick mockup for the Horizon Analytics dashboard layout? Nothing fancy — just enough to show the widget arrangement and general information hierarchy.\n\nNo rush on this — I know you've got the Pinnacle and Cobalt work on your plate. Whenever you get a chance is fine.\n\nThanks,\nRavi",
+    "received_datetime": "2026-02-06T11:00:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_023_cobalt_brief",
+    "thread_id": "thread_023_cobalt_brand",
+    "from_name": "Elena Voss",
+    "from_email": "elena@luminaworks.co",
+    "to_emails": [
+      "leo@luminaworks.co",
+      "mara@luminaworks.co",
+      "ravi@luminaworks.co"
+    ],
+    "cc_emails": ["fatima@nexadigital.co"],
+    "subject": "Cobalt brand refresh — creative brief attached",
+    "body_text": "Team,\n\nAttached is the creative brief for the Cobalt rebrand. This covers our brand positioning, target audience, competitive landscape, and visual direction.\n\nPlease review the brief and share any feedback by Feb 10. Fatima and her team at Nexa Digital will be leading the creative execution, so I want to make sure we're all aligned before they start the design sprints.\n\nKey sections to pay attention to:\n- Brand voice guidelines (p. 3-4)\n- Color palette direction (p. 7)\n- Logo evolution requirements (p. 9)\n\nLet me know if you have questions.\n\nElena",
+    "received_datetime": "2026-02-04T09:30:00Z",
+    "labels": ["INBOX"],
+    "attachments": [
+      {
+        "filename": "Cobalt_Creative_Brief_v2.pdf",
+        "mimetype": "application/pdf",
+        "description": "Creative brief for Cobalt rebrand including brand positioning, visual direction, and logo requirements"
+      }
+    ]
+  },
+  {
+    "message_id": "msg_024_cobalt_logos",
+    "thread_id": "thread_023_cobalt_brand",
+    "from_name": "Fatima Al-Rashid",
+    "from_email": "fatima@nexadigital.co",
+    "to_emails": ["elena@luminaworks.co"],
+    "cc_emails": ["leo@luminaworks.co"],
+    "subject": "Re: Cobolt rebrand — first round of logo concepts ready for review",
+    "body_text": "Hi Elena,\n\nWe've completed the first round of logo concepts for the Cobolt rebrand. There are five directions ranging from evolutionary (keeping elements of the current mark) to revolutionary (completely new identity).\n\nI've uploaded them to the shared Figma workspace under \"Cobalt Rebrand > Logo Concepts R1\". Each concept includes:\n- Primary logo\n- Icon mark\n- Wordmark variation\n- Color applications\n\nWould love to schedule a review session this week if possible. Let me know what works for your team.\n\nBest,\nFatima",
+    "received_datetime": "2026-02-06T08:45:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_025_cobalt_feedback",
+    "thread_id": "thread_023_cobalt_brand",
+    "from_name": "Leo Park",
+    "from_email": "leo@luminaworks.co",
+    "to_emails": ["elena@luminaworks.co", "fatima@nexadigital.co"],
+    "cc_emails": [],
+    "subject": "Re: Cobolt rebrand — first round of logo concepts ready for review",
+    "body_text": "Elena, Fatima,\n\nJust reviewed all five concepts. Concept 3 is really strong — the geometric mark feels modern and the typography is clean. My only feedback is that the teal feels a bit generic for our brand.\n\nCan we see concept 3 rendered in our brand navy (#1B2A4A)? I think it would feel much more distinctive. I'd need this by Feb 12 so I can incorporate it into the style guide update I'm working on.\n\nLeo",
+    "received_datetime": "2026-02-06T10:30:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_026_cobalt_approval",
+    "thread_id": "thread_026_cobalt_palette",
+    "from_name": "Elena Voss",
+    "from_email": "elena@luminaworks.co",
+    "to_emails": ["mara@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "Need your approval on the Cobalt color palette — see attached",
+    "body_text": "Mara,\n\nWe've narrowed down the Cobalt color palette to two options. Both work well across digital and print, but I want your gut reaction before we commit.\n\nOption A: Navy-forward with accent coral (more corporate, premium feel)\nOption B: Deep teal with warm gold accents (more approachable, modern)\n\nAttached are mockups showing each option applied to our website, business cards, and presentation templates. Would love your approval so we can brief the production team.\n\nElena",
+    "received_datetime": "2026-02-06T14:00:00Z",
+    "labels": ["INBOX"],
+    "attachments": [
+      {
+        "filename": "Cobalt_Palette_Options_AB.pdf",
+        "mimetype": "application/pdf",
+        "description": "Side-by-side mockups of two color palette options for Cobalt rebrand applied across brand touchpoints"
+      }
+    ]
+  },
+  {
+    "message_id": "msg_027_cobalt_self_reminder",
+    "thread_id": "thread_027_cobalt_swag",
+    "from_name": "Elena Voss",
+    "from_email": "elena@luminaworks.co",
+    "to_emails": ["elena@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "Reminder to self — order swag samples for rebrand unveil",
+    "body_text": "Elena —\n\nDon't forget to order swag samples for the Cobalt rebrand unveiling event. Need to get:\n- T-shirts with new logo (S/M/L/XL in both colorways)\n- Sticker sheets\n- Branded notebooks\n\nOrder from SwagCo — contact is Jamie at orders@swagco.com. Need samples in hand by Feb 20 to approve before the bulk order.\n\n— E",
+    "received_datetime": "2026-02-06T17:30:00Z",
+    "labels": ["INBOX", "SENT"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_028_meridian_terms",
+    "thread_id": "thread_028_meridian_deal",
+    "from_name": "Nina Johansson",
+    "from_email": "nina@crestviewpartners.io",
+    "to_emails": ["mara@luminaworks.co", "jalen@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "Meridian deal — updated term sheet attached",
+    "body_text": "Hi Mara and Jalen,\n\nPlease find attached the updated term sheet for the Meridian Partnership. We've incorporated the feedback from our last call, including:\n\n- Revised revenue share structure (60/40 → 55/45)\n- Updated exclusivity clause to cover only North American markets\n- Added performance milestone triggers for Year 2 renewal\n\nWe'd like to get alignment on these terms by February 16 so our legal team can begin drafting the final agreement. Please review and let us know if you have any concerns.\n\nBest regards,\nNina Johansson\nCrestview Partners",
+    "received_datetime": "2026-02-05T07:00:00Z",
+    "labels": ["INBOX", "IMPORTANT"],
+    "attachments": [
+      {
+        "filename": "Meridian_Partnership_TermSheet_v4.pdf",
+        "mimetype": "application/pdf",
+        "description": "Updated term sheet for Meridian Partnership with revised revenue share and exclusivity terms"
+      }
+    ]
+  },
+  {
+    "message_id": "msg_029_meridian_fwd",
+    "thread_id": "thread_029_meridian_legal",
+    "from_name": "Mara Osei",
+    "from_email": "mara@luminaworks.co",
+    "to_emails": ["amira@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "FWD: Meridian deal — updated term sheet attached",
+    "body_text": "Amira,\n\nForwarding the updated term sheet from Crestview for the Meridian partnership. Can you review this and give me your take? I need your assessment by Monday (Feb 9) — particularly around the exclusivity clause and the milestone triggers.\n\nLet me know if anything jumps out.\n\nMara\n\n---------- Forwarded message ----------\nFrom: Nina Johansson <nina@crestviewpartners.io>\nDate: Feb 5, 2026\nSubject: Meridian deal — updated term sheet attached\n\n[See attached]",
+    "received_datetime": "2026-02-05T09:30:00Z",
+    "labels": ["INBOX", "SENT"],
+    "attachments": [
+      {
+        "filename": "Meridian_Partnership_TermSheet_v4.pdf",
+        "mimetype": "application/pdf",
+        "description": "Updated term sheet for Meridian Partnership with revised revenue share and exclusivity terms"
+      }
+    ]
+  },
+  {
+    "message_id": "msg_030_meridian_flags",
+    "thread_id": "thread_029_meridian_legal",
+    "from_name": "Amira Hassan",
+    "from_email": "amira@luminaworks.co",
+    "to_emails": ["mara@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "Re: Meridian — couple of red flags in section 4.2, let's discuss before I sign off",
+    "body_text": "Mara,\n\nI've reviewed the Meridian term sheet. Most of it is clean, but I have concerns about Section 4.2 (Liability and Indemnification). Specifically:\n\n- The indemnification cap is set at 2x annual revenue share, which is higher than industry standard\n- The IP assignment clause is overly broad — it could be interpreted to include our pre-existing IP\n- There's no carve-out for force majeure events\n\nI don't think these are dealbreakers, but we need to discuss before I'm comfortable giving the green light. Can we set up a 30-minute call this week to go through my notes?\n\nAmira",
+    "received_datetime": "2026-02-06T11:45:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_031_meridian_demo",
+    "thread_id": "thread_031_meridian_demo",
+    "from_name": "Jalen Torres",
+    "from_email": "jalen@luminaworks.co",
+    "to_emails": ["diego@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "MP — their VP wants a product demo next Thursday",
+    "body_text": "Diego,\n\nJust heard from Nina — the VP of Strategy at Crestview wants to see a product demo next Thursday (Feb 12). This is a big deal — if we nail this, it could accelerate the partnership timeline significantly.\n\nCan you pull together a tailored demo that focuses on the integration capabilities and the ROI dashboard? Let me know if you need anything from the product team.\n\nJalen",
+    "received_datetime": "2026-02-06T13:15:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_032_meridian_deck",
+    "thread_id": "thread_031_meridian_demo",
+    "from_name": "Diego Fuentes",
+    "from_email": "diego@luminaworks.co",
+    "to_emails": ["jalen@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "Re: MP demo — I'll prep the deck. Can Ravi handle the live demo portion?",
+    "body_text": "Jalen,\n\nI'm on it — I'll prep the presentation deck with the integration use cases and ROI projections. Should have it ready by Tuesday for a dry run.\n\nFor the live demo portion, can Ravi handle that? He knows the product inside out and can speak to the technical integration points better than I can. I'll coordinate with him on the flow.\n\nDiego",
+    "received_datetime": "2026-02-06T14:00:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_033_quantum_window",
+    "thread_id": "thread_033_quantum_migration",
+    "from_name": "Tomas Lindgren",
+    "from_email": "tomas@luminaworks.co",
+    "to_emails": [
+      "priya@luminaworks.co",
+      "ravi@luminaworks.co",
+      "ben@luminaworks.co",
+      "mara@luminaworks.co"
+    ],
+    "cc_emails": ["kai@steelbridge.dev"],
+    "subject": "Quantum infra upgrade — migration window Feb 22-23",
+    "body_text": "Team,\n\nThe migration window for the Quantum infrastructure upgrade is confirmed for February 22-23 (Saturday-Sunday). This will be a full cutover from the legacy infrastructure to the new cloud-native stack.\n\nKey details:\n- Start: Saturday Feb 22 at 6:00 AM PST\n- Expected completion: Sunday Feb 23 by 6:00 PM PST\n- Downtime: Approximately 4-6 hours during the DNS cutover phase\n\nI need everyone to prepare their services for the migration. Specifically, make sure all your applications can handle the new endpoint configurations. I'll be sending out the new connection strings by Feb 19.\n\nKai and the Steelbridge team will be handling the physical infrastructure side.\n\nTomas",
+    "received_datetime": "2026-02-05T08:00:00Z",
+    "labels": ["INBOX", "IMPORTANT"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_034_quantum_vpn",
+    "thread_id": "thread_033_quantum_migration",
+    "from_name": "Kai Yamamoto",
+    "from_email": "kai@steelbridge.dev",
+    "to_emails": ["tomas@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "Re: Quantum infra upgrade — Steelbridge team ready for quantam cutover. Need VPN creds by Feb 18",
+    "body_text": "Tomas,\n\nSteelbridge team is fully prepped for the quantam cutover. We've got three engineers allocated for the weekend window and our checklist is complete.\n\nOne blocker: we need VPN credentials for your staging and production environments by February 18 at the latest. That gives us time to test connectivity and run our pre-flight validation scripts before the actual migration window.\n\nCan you get those set up and sent over securely? Happy to use whatever credential sharing tool you prefer.\n\nThanks,\nKai Yamamoto\nSteelbridge Engineering",
+    "received_datetime": "2026-02-05T19:30:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_035_quantum_rollback",
+    "thread_id": "thread_033_quantum_migration",
+    "from_name": "Priya Nair",
+    "from_email": "priya@luminaworks.co",
+    "to_emails": ["tomas@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "Re: the upgrade — what's the rollback plan if something goes sideways?",
+    "body_text": "Tomas,\n\nBefore we go into the migration window, I want to make sure we have a solid rollback plan. A few questions:\n\n- If the cutover fails midway, can we revert to the legacy infrastructure within a defined time window?\n- Are we snapshotting all databases before the migration starts?\n- What's the communication plan if we need to abort?\n\nI'd feel a lot better if we had a documented rollback procedure that the whole team has reviewed. Can you put that together?\n\nPriya",
+    "received_datetime": "2026-02-06T09:00:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_036_quantum_checklist",
+    "thread_id": "thread_036_quantum_preflight",
+    "from_name": "Tomas Lindgren",
+    "from_email": "tomas@luminaworks.co",
+    "to_emails": [
+      "priya@luminaworks.co",
+      "ravi@luminaworks.co",
+      "ben@luminaworks.co"
+    ],
+    "cc_emails": [],
+    "subject": "QI — pre-flight checklist",
+    "body_text": "Team,\n\nHere's the pre-flight checklist for the Quantum infra upgrade. Everyone needs to complete their items before Feb 21:\n\n• Verify all application environment variables are updated to reference the new infrastructure endpoints\n• Run full regression test suite against the staging environment with the new configuration\n• Back up all production databases and confirm backup integrity with checksums\n\nNo exceptions — if any of these aren't done by Feb 21, we push the migration window. Let me know if you foresee any issues.\n\nTomas",
+    "received_datetime": "2026-02-06T15:00:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_037_quantum_duplicate",
+    "thread_id": "thread_036_quantum_preflight",
+    "from_name": "Tomas Lindgren",
+    "from_email": "tomas@luminaworks.co",
+    "to_emails": [
+      "priya@luminaworks.co",
+      "ravi@luminaworks.co",
+      "ben@luminaworks.co"
+    ],
+    "cc_emails": [],
+    "subject": "QI — pre-flight checklist",
+    "body_text": "Team,\n\nHere's the pre-flight checklist for the Quantum infra upgrade. Everyone needs to complete their items before Feb 21:\n\n• Verify all application environment variables are updated to reference the new infrastructure endpoints\n• Run full regression test suite against the staging environment with the new configuration\n• Back up all production databases and confirm backup integrity with checksums\n\nNo exceptions — if any of these aren't done by Feb 21, we push the migration window. Let me know if you foresee any issues.\n\nTomas",
+    "received_datetime": "2026-02-06T15:02:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_038_linkedin_notification",
+    "thread_id": "thread_038_linkedin",
+    "from_name": "LinkedIn",
+    "from_email": "noreply@linkedin.com",
+    "to_emails": ["mara@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "You have 5 new connection requests",
+    "body_text": "LinkedIn\n\nHi Mara,\n\nYou have 5 new connection requests:\n\n1. Sarah Chen — VP of Product at TechForward Inc.\n2. Marcus Williams — Managing Director at Apex Ventures\n3. Aisha Patel — Head of Partnerships at GlobalSync\n4. James O'Brien — CTO at DataPrime Solutions\n5. Yuki Nakamura — Senior Analyst at Brightwave Capital\n\nView and respond to your connection requests:\nhttps://www.linkedin.com/mynetwork/invitation-manager/\n\nThis email was intended for Mara Osei. Learn why we included this.\n\n© 2026 LinkedIn Corporation, 1000 W Maude Ave, Sunnyvale, CA 94085.\nUnsubscribe | Help",
+    "received_datetime": "2026-02-06T07:00:00Z",
+    "labels": ["INBOX", "CATEGORY_SOCIAL"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_039_calendar_reminder",
+    "thread_id": "thread_039_calendar",
+    "from_name": "Google Calendar",
+    "from_email": "calendar-noreply@google.com",
+    "to_emails": ["mara@luminaworks.co"],
+    "cc_emails": [],
+    "subject": "Reminder: Team Standup tomorrow at 9am",
+    "body_text": "Google Calendar\n\nReminder: Team Standup\n\nWhen: Saturday, February 7, 2026 9:00 AM – 9:30 AM (PST)\nWhere: Zoom — https://zoom.us/j/123456789\nCalendar: mara@luminaworks.co\nWho:\n  • mara@luminaworks.co (organizer)\n  • jalen@luminaworks.co\n  • priya@luminaworks.co\n  • ravi@luminaworks.co\n  • elena@luminaworks.co\n\nGoing? Yes - Maybe - No    More options\n\nInvitation from Google Calendar: https://calendar.google.com/event?eid=abc123",
+    "received_datetime": "2026-02-06T21:00:00Z",
+    "labels": ["INBOX", "CATEGORY_UPDATES"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_040_congrats",
+    "thread_id": "thread_040_congrats",
+    "from_name": "Mara Osei",
+    "from_email": "mara@luminaworks.co",
+    "to_emails": [
+      "jalen@luminaworks.co",
+      "priya@luminaworks.co",
+      "ravi@luminaworks.co",
+      "elena@luminaworks.co",
+      "leo@luminaworks.co",
+      "tomas@luminaworks.co",
+      "diego@luminaworks.co",
+      "ben@luminaworks.co",
+      "suki@luminaworks.co",
+      "amira@luminaworks.co"
+    ],
+    "cc_emails": [],
+    "subject": "Great work everyone on hitting the January targets! 🎉",
+    "body_text": "Team,\n\nJust wanted to take a moment to recognize the incredible work everyone put in last month. We hit 112% of our January revenue target and closed 3 new enterprise accounts — that's a company record.\n\nSpecial shoutouts to Diego for closing the Meridian lead, Elena for the campaign that drove 40% of our inbound traffic, and Priya's team for shipping zero-downtime deploys all month.\n\nKeep up the amazing work. Drinks on me at the next team happy hour.\n\nMara",
+    "received_datetime": "2026-02-03T17:00:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_041_lunch_order",
+    "thread_id": "thread_041_lunch",
+    "from_name": "Diego Fuentes",
+    "from_email": "diego@luminaworks.co",
+    "to_emails": [
+      "jalen@luminaworks.co",
+      "priya@luminaworks.co",
+      "ravi@luminaworks.co",
+      "elena@luminaworks.co",
+      "leo@luminaworks.co",
+      "tomas@luminaworks.co",
+      "ben@luminaworks.co",
+      "suki@luminaworks.co",
+      "amira@luminaworks.co",
+      "mara@luminaworks.co"
+    ],
+    "cc_emails": [],
+    "subject": "Lunch order for tomorrow — reply with your pick from Sakura Bistro",
+    "body_text": "Hey everyone,\n\nI'm putting in a group lunch order for tomorrow from Sakura Bistro. Here's the menu:\n\n1. Teriyaki Chicken Bowl — $14\n2. Spicy Salmon Poke Bowl — $16\n3. Vegetable Tempura Udon — $13\n4. Miso Glazed Tofu Plate — $12\n5. Katsu Curry Rice — $15\n\nReply with your number by 5pm today so I can place the order. Drinks are on the company card.\n\nDiego",
+    "received_datetime": "2026-02-06T12:00:00Z",
+    "labels": ["INBOX"],
+    "attachments": []
+  },
+  {
+    "message_id": "msg_042_expense_reminder",
+    "thread_id": "thread_042_expense",
+    "from_name": "Suki Tanaka",
+    "from_email": "suki@luminaworks.co",
+    "to_emails": [
+      "jalen@luminaworks.co",
+      "priya@luminaworks.co",
+      "ravi@luminaworks.co",
+      "elena@luminaworks.co",
+      "leo@luminaworks.co",
+      "tomas@luminaworks.co",
+      "diego@luminaworks.co",
+      "ben@luminaworks.co",
+      "amira@luminaworks.co",
+      "mara@luminaworks.co"
+    ],
+    "cc_emails": [],
+    "subject": "Reminder: expense reports due every month by the 5th",
+    "body_text": "Hi team,\n\nFriendly reminder that expense reports are due by the 5th of every month. I noticed several people missed the February deadline (it was yesterday), so please submit any outstanding expenses ASAP.\n\nGoing forward:\n- Submit all expense reports through Expensify by the 5th of each month\n- Include receipts for anything over $25\n- Use the correct project codes (I've attached the updated list)\n- Late submissions delay reimbursement and make month-end close harder for the finance team\n\nIf you have questions about project codes or need help with Expensify, ping me on Slack.\n\nThanks,\nSuki",
+    "received_datetime": "2026-02-06T16:00:00Z",
+    "labels": ["INBOX"],
+    "attachments": [
+      {
+        "filename": "Project_Codes_2026.pdf",
+        "mimetype": "application/pdf",
+        "description": "Updated list of project codes for expense report categorization"
+      }
+    ]
+  }
+]

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { exchangeGmailCodeForTokens } from "@/lib/gmail/client";
 import { encrypt } from "@/lib/encryption";
 
@@ -61,8 +62,10 @@ export async function GET(request: NextRequest) {
     const encryptedAccessToken = encrypt(tokens.access_token);
     const encryptedRefreshToken = encrypt(tokens.refresh_token);
 
+    const admin = createAdminClient();
+
     // Upsert email_scan_configs
-    const { error: upsertError } = await supabase
+    const { error: upsertError } = await admin
       .from("email_scan_configs")
       .upsert(
         {

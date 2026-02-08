@@ -8,9 +8,17 @@ import {
   isBefore,
   startOfDay,
   parseISO,
+  addDays,
+  differenceInCalendarDays,
 } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
-import type { Task, TaskPriority, TaskStatus } from "@/types";
+import type {
+  Task,
+  TaskPriority,
+  TaskStatus,
+  TaskSortField,
+  SortDirection,
+} from "@/types";
 
 export const cn = (...inputs: ClassValue[]): string => {
   return twMerge(clsx(inputs));
@@ -258,4 +266,109 @@ export const categorizeTodayTasks = (
   );
 
   return { overdue, dueToday, completedToday };
+};
+
+export interface UpcomingDayBucket {
+  day: Date;
+  label: string;
+  tasks: Task[];
+}
+
+export const categorizeUpcomingTasks = (tasks: Task[]): UpcomingDayBucket[] => {
+  const today = startOfDay(new Date());
+  const terminalStatuses: TaskStatus[] = ["done", "cancelled"];
+  const priorityOrder: TaskPriority[] = [
+    "urgent",
+    "high",
+    "medium",
+    "low",
+    "none",
+  ];
+
+  const buckets: UpcomingDayBucket[] = [];
+  for (let i = 0; i < 7; i++) {
+    const day = addDays(today, i);
+    const label =
+      i === 0 ? "Today" : i === 1 ? "Tomorrow" : format(day, "EEEE, MMM d");
+    buckets.push({ day, label, tasks: [] });
+  }
+
+  for (const task of tasks) {
+    if (terminalStatuses.includes(task.status)) continue;
+    if (!task.due_date) continue;
+
+    try {
+      const dueDate = startOfDay(parseISO(task.due_date));
+      if (isBefore(dueDate, today)) continue; // past-due excluded
+
+      const diff = differenceInCalendarDays(dueDate, today);
+      if (diff >= 0 && diff < 7) {
+        buckets[diff].tasks.push(task);
+      }
+    } catch {
+      // invalid date, skip
+    }
+  }
+
+  // Sort each day's tasks by priority
+  for (const bucket of buckets) {
+    bucket.tasks.sort(
+      (a, b) =>
+        priorityOrder.indexOf(a.priority) - priorityOrder.indexOf(b.priority),
+    );
+  }
+
+  return buckets;
+};
+
+export const sortTasks = (
+  tasks: Task[],
+  field: TaskSortField,
+  direction: SortDirection,
+): Task[] => {
+  const priorityOrder: TaskPriority[] = [
+    "urgent",
+    "high",
+    "medium",
+    "low",
+    "none",
+  ];
+  const statusOrder: TaskStatus[] = [
+    "inbox",
+    "todo",
+    "in_progress",
+    "waiting",
+    "done",
+    "cancelled",
+  ];
+
+  return [...tasks].sort((a, b) => {
+    let cmp = 0;
+
+    switch (field) {
+      case "priority":
+        cmp =
+          priorityOrder.indexOf(a.priority) - priorityOrder.indexOf(b.priority);
+        break;
+      case "status":
+        cmp = statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
+        break;
+      case "due_date": {
+        // null dates go last regardless of direction
+        if (!a.due_date && !b.due_date) cmp = 0;
+        else if (!a.due_date) return 1;
+        else if (!b.due_date) return -1;
+        else cmp = a.due_date.localeCompare(b.due_date);
+        break;
+      }
+      case "created_at":
+        cmp = a.created_at.localeCompare(b.created_at);
+        break;
+      case "title":
+        cmp = a.title.localeCompare(b.title);
+        break;
+    }
+
+    return direction === "asc" ? cmp : -cmp;
+  });
 };

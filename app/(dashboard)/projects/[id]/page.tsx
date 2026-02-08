@@ -27,7 +27,8 @@ import { useProject } from "@/hooks/useProjects";
 import { useProjectsWithSync } from "@/hooks/useProjects";
 import { useTasksWithSync } from "@/hooks/useTasks";
 import { useUI, useUIActions } from "@/store";
-import { formatDate } from "@/lib/utils";
+import { formatDate, sortTasks } from "@/lib/utils";
+import type { TaskSortField, SortDirection, TaskGroupBy } from "@/types";
 
 export default function ProjectDetailPage({
   params,
@@ -53,6 +54,11 @@ export default function ProjectDetailPage({
   const { openTaskDetail, closeTaskDetail, toggleQuickCapture } =
     useUIActions();
   const [editOpen, setEditOpen] = useState(false);
+  const [sortField, setSortField] = useState<TaskSortField | undefined>(
+    "priority",
+  );
+  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [groupBy, setGroupBy] = useState<TaskGroupBy>("none");
 
   // Filter tasks to this project
   const projectTasks = useMemo(() => {
@@ -60,6 +66,24 @@ export default function ProjectDetailPage({
       filters && Object.keys(filters).length > 0 ? filteredTasks : tasks;
     return source.filter((t) => t.project_id === id);
   }, [tasks, filteredTasks, filters, id]);
+
+  // Apply sorting
+  const sortedProjectTasks = useMemo(() => {
+    if (!sortField) return projectTasks;
+    return sortTasks(projectTasks, sortField, sortDirection);
+  }, [projectTasks, sortField, sortDirection]);
+
+  const handleSortChange = (field: TaskSortField, dir: SortDirection) => {
+    setSortField(field);
+    setSortDirection(dir);
+  };
+
+  const handleClearFilters = () => {
+    clearFilters();
+    setSortField("priority");
+    setSortDirection("asc");
+    setGroupBy("none");
+  };
 
   if (!project) {
     return (
@@ -146,21 +170,28 @@ export default function ProjectDetailPage({
 
       {/* Project metadata */}
       <div className="text-xs text-muted-foreground">
-        Created {formatDate(project.created_at)} &middot; {projectTasks.length}{" "}
-        task{projectTasks.length !== 1 ? "s" : ""}
+        Created {formatDate(project.created_at)} &middot;{" "}
+        {sortedProjectTasks.length} task
+        {sortedProjectTasks.length !== 1 ? "s" : ""}
       </div>
 
       {/* Filters */}
       <TaskFiltersBar
         filters={filters}
         onFilterChange={setFilter}
-        onClear={clearFilters}
+        onClear={handleClearFilters}
+        sortField={sortField}
+        sortDirection={sortDirection}
+        onSortChange={handleSortChange}
+        groupBy={groupBy}
+        onGroupByChange={setGroupBy}
       />
 
       {/* Task List scoped to this project */}
       <TaskList
-        tasks={projectTasks}
+        tasks={sortedProjectTasks}
         loading={tasksLoading}
+        groupByField={groupBy}
         emptyMessage="No tasks in this project yet."
         onTaskClick={openTaskDetail}
         onTaskStatusChange={changeTaskStatus}

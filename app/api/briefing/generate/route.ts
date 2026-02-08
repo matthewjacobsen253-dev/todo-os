@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { generateBriefing } from "@/lib/claude/briefing-generator";
 import type { BriefingPreference, Task } from "@/types";
 
@@ -36,8 +37,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const admin = createAdminClient();
+
     // Fetch preferences (or use defaults)
-    const { data: prefs } = await supabase
+    const { data: prefs } = await admin
       .from("briefing_preferences")
       .select("*")
       .eq("workspace_id", workspace_id)
@@ -53,7 +56,7 @@ export async function POST(request: NextRequest) {
     };
 
     // Fetch active tasks for this workspace
-    const { data: tasks, error: tasksError } = await supabase
+    const { data: tasks, error: tasksError } = await admin
       .from("tasks")
       .select("*")
       .eq("workspace_id", workspace_id);
@@ -70,7 +73,7 @@ export async function POST(request: NextRequest) {
     const today = new Date().toISOString().split("T")[0];
 
     // Upsert briefing (on conflict workspace_id, user_id, date)
-    const { data: briefing, error: upsertError } = await supabase
+    const { data: briefing, error: upsertError } = await admin
       .from("briefings")
       .upsert(
         {

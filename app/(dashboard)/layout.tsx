@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState, ReactNode } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, useMemo, ReactNode } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import {
   Inbox,
   CalendarDays,
+  CalendarRange,
   Zap,
   FolderKanban,
   ClipboardCheck,
@@ -15,6 +16,7 @@ import {
   LogOut,
   Menu,
   ChevronLeft,
+  BellOff,
 } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -22,14 +24,21 @@ import { WorkspaceSwitcher } from "@/components/layout/workspace-switcher";
 import { SearchCommand } from "@/components/layout/search-command";
 import { QuickCaptureDialog } from "@/components/tasks/quick-capture-dialog";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   useUI,
   useUIActions,
   useReviewQueue,
   useWorkspaceActions,
+  useTasks,
 } from "@/store";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useProjectsWithSync } from "@/hooks/useProjects";
 import { useToast } from "@/components/ui/toast";
+import { categorizeTodayTasks, cn } from "@/lib/utils";
 
 interface NavItem {
   label: string;
@@ -40,11 +49,11 @@ interface NavItem {
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [userEmail, setUserEmail] = useState<string>("");
-  const [unreadCount, setUnreadCount] = useState(0);
 
   const { quickCaptureOpen, commandPaletteOpen } = useUI();
   const { toggleQuickCapture, toggleCommandPalette } = useUIActions();
@@ -52,13 +61,36 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const { projects } = useProjectsWithSync();
   const { count: reviewCount } = useReviewQueue();
   const { addToast } = useToast();
+  const { tasks } = useTasks();
 
   // Register keyboard shortcuts
   useKeyboardShortcuts();
 
+  // Compute badge counts from store tasks
+  const inboxCount = useMemo(
+    () => tasks.filter((t) => t.status === "inbox").length,
+    [tasks],
+  );
+
+  const todayCount = useMemo(() => {
+    const { overdue, dueToday } = categorizeTodayTasks(tasks);
+    return overdue.length + dueToday.length;
+  }, [tasks]);
+
   const navItems: NavItem[] = [
-    { label: "Inbox", href: "/inbox", icon: Inbox, badge: unreadCount },
-    { label: "Today", href: "/today", icon: CalendarDays },
+    {
+      label: "Inbox",
+      href: "/inbox",
+      icon: Inbox,
+      badge: inboxCount > 0 ? inboxCount : undefined,
+    },
+    {
+      label: "Today",
+      href: "/today",
+      icon: CalendarDays,
+      badge: todayCount > 0 ? todayCount : undefined,
+    },
+    { label: "Upcoming", href: "/upcoming", icon: CalendarRange },
     { label: "Briefing", href: "/briefing", icon: Zap },
     { label: "Projects", href: "/projects", icon: FolderKanban },
     {
@@ -92,7 +124,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       if (user) {
         setIsAuthenticated(true);
         setUserEmail(user.email || "");
-        loadUnreadCount();
       } else {
         setIsAuthenticated(false);
         router.push("/auth/login");
@@ -100,21 +131,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     } catch {
       setIsAuthenticated(false);
       router.push("/auth/login");
-    }
-  };
-
-  const loadUnreadCount = async () => {
-    try {
-      const supabase = createClient();
-      const { count } = await supabase
-        .from("tasks")
-        .select("*", { count: "exact" })
-        .eq("status", "todo")
-        .is("completed_at", null);
-
-      setUnreadCount(count || 0);
-    } catch {
-      // Silently ignore — task count is non-critical
     }
   };
 
@@ -174,11 +190,17 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <nav className="space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
+              const isActive = pathname === item.href;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="group flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted transition text-muted-foreground hover:text-foreground"
+                  className={cn(
+                    "group flex items-center gap-3 px-3 py-2.5 rounded-lg transition",
+                    isActive
+                      ? "bg-muted text-foreground font-semibold"
+                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
+                  )}
                 >
                   <Icon className="w-5 h-5 flex-shrink-0" />
                   {sidebarOpen && (
@@ -204,19 +226,27 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 Projects
               </p>
-              {projects.slice(0, 5).map((project) => (
-                <Link
-                  key={project.id}
-                  href={`/projects/${project.id}`}
-                  className="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted transition text-muted-foreground hover:text-foreground"
-                >
-                  <span
-                    className="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: project.color }}
-                  />
-                  <span className="text-sm truncate">{project.name}</span>
-                </Link>
-              ))}
+              {projects.slice(0, 5).map((project) => {
+                const isActive = pathname === `/projects/${project.id}`;
+                return (
+                  <Link
+                    key={project.id}
+                    href={`/projects/${project.id}`}
+                    className={cn(
+                      "group flex items-center gap-3 px-3 py-2 rounded-lg transition",
+                      isActive
+                        ? "bg-muted text-foreground font-semibold"
+                        : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
+                    )}
+                  >
+                    <span
+                      className="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0"
+                      style={{ backgroundColor: project.color }}
+                    />
+                    <span className="text-sm truncate">{project.name}</span>
+                  </Link>
+                );
+              })}
               {projects.length > 5 && (
                 <Link
                   href="/projects"
@@ -232,7 +262,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         <div className="p-4 border-t space-y-2">
           <Link
             href="/settings"
-            className="group flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted transition text-muted-foreground hover:text-foreground"
+            className={cn(
+              "group flex items-center gap-3 px-3 py-2.5 rounded-lg transition",
+              pathname === "/settings"
+                ? "bg-muted text-foreground font-semibold"
+                : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
+            )}
           >
             <Settings className="w-5 h-5 flex-shrink-0" />
             {sidebarOpen && (
@@ -286,12 +321,27 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             </div>
 
             <div className="flex items-center gap-4">
-              <button
-                aria-label="Notifications"
-                className="text-muted-foreground hover:text-foreground transition p-2"
-              >
-                <Bell className="w-5 h-5" />
-              </button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    aria-label="Notifications"
+                    className="text-muted-foreground hover:text-foreground transition p-2"
+                  >
+                    <Bell className="w-5 h-5" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-80">
+                  <div className="p-4 text-center">
+                    <BellOff className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                    <p className="text-sm font-medium text-foreground">
+                      No notifications
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      You&apos;re all caught up!
+                    </p>
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </header>

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function GET(request: NextRequest) {
   try {
@@ -30,14 +31,13 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    const admin = createAdminClient();
+
     // Try using the search_tasks RPC if available, otherwise fall back to ilike
-    const { data: rpcData, error: rpcError } = await supabase.rpc(
-      "search_tasks",
-      {
-        ws_id: workspaceId,
-        query_text: query.trim(),
-      },
-    );
+    const { data: rpcData, error: rpcError } = await admin.rpc("search_tasks", {
+      ws_id: workspaceId,
+      query_text: query.trim(),
+    });
 
     if (!rpcError && rpcData) {
       const results = (rpcData as Array<Record<string, unknown>>)
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Fallback: simple ilike search
-    const { data, error } = await supabase
+    const { data, error } = await admin
       .from("tasks")
       .select("id, title, description")
       .eq("workspace_id", workspaceId)

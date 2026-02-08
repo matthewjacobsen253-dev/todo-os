@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 import {
   Dialog,
   DialogContent,
@@ -24,7 +23,6 @@ export function WorkspaceCreateDialog({
 }: WorkspaceCreateDialogProps) {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
-  const [description, setDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -58,30 +56,20 @@ export function WorkspaceCreateDialog({
         return;
       }
 
-      const supabase = createClient();
+      // Create workspace via server API route (bypasses RLS)
+      const response = await fetch("/api/workspaces", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          slug: slug || generateSlug(name),
+        }),
+      });
 
-      // Get current user
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
-      if (userError || !user) {
-        setError("You must be logged in to create a workspace");
-        setIsLoading(false);
-        return;
-      }
+      const workspaceData = await response.json();
 
-      // Create workspace via SECURITY DEFINER function (bypasses RLS)
-      const { data: workspaceData, error: createError } = await supabase.rpc(
-        "create_workspace",
-        {
-          ws_name: name.trim(),
-          ws_slug: slug || generateSlug(name),
-        },
-      );
-
-      if (createError) {
-        setError(createError.message || "Failed to create workspace");
+      if (!response.ok) {
+        setError(workspaceData.error || "Failed to create workspace");
         setIsLoading(false);
         return;
       }
@@ -89,7 +77,6 @@ export function WorkspaceCreateDialog({
       // Reset form
       setName("");
       setSlug("");
-      setDescription("");
       onOpenChange(false);
       onCreated(workspaceData);
     } catch {
@@ -150,25 +137,6 @@ export function WorkspaceCreateDialog({
             <p className="text-xs text-slate-400">
               Used in URLs and for identification
             </p>
-          </div>
-
-          {/* Description Field */}
-          <div className="space-y-2">
-            <label
-              htmlFor="workspace-description"
-              className="text-sm font-medium"
-            >
-              Description (optional)
-            </label>
-            <textarea
-              id="workspace-description"
-              placeholder="What is this workspace for?"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              disabled={isLoading}
-              className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition disabled:opacity-50 disabled:cursor-not-allowed resize-none"
-              rows={3}
-            />
           </div>
 
           {/* Submit Button */}

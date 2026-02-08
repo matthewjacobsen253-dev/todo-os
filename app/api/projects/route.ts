@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function GET(request: NextRequest) {
   try {
@@ -22,7 +23,9 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const { data, error } = await supabase
+    const admin = createAdminClient();
+
+    const { data, error } = await admin
       .from("projects")
       .select("*")
       .eq("workspace_id", workspaceId)
@@ -37,7 +40,7 @@ export async function GET(request: NextRequest) {
     const taskCounts: Record<string, { total: number; completed: number }> = {};
 
     if (projectIds.length > 0) {
-      const { data: tasks } = await supabase
+      const { data: tasks } = await admin
         .from("tasks")
         .select("project_id, status")
         .eq("workspace_id", workspaceId)
@@ -106,7 +109,8 @@ export async function POST(request: NextRequest) {
       status: "active" as const,
     };
 
-    const { data, error } = await supabase
+    const admin = createAdminClient();
+    const { data, error } = await admin
       .from("projects")
       .insert([projectData])
       .select()
