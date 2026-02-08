@@ -20,7 +20,6 @@ import {
   TaskList,
   TaskFiltersBar,
   TaskDetailSidebar,
-  QuickCaptureDialog,
 } from "@/components/tasks";
 import { ProjectEditDialog } from "@/components/projects/project-edit-dialog";
 import { useProject } from "@/hooks/useProjects";
@@ -50,9 +49,8 @@ export default function ProjectDetailPage({
     clearFilters,
   } = useTasksWithSync();
 
-  const { taskDetailOpen, selectedTaskId, quickCaptureOpen } = useUI();
-  const { openTaskDetail, closeTaskDetail, toggleQuickCapture } =
-    useUIActions();
+  const { taskDetailOpen, selectedTaskId } = useUI();
+  const { openTaskDetail, closeTaskDetail } = useUIActions();
   const [editOpen, setEditOpen] = useState(false);
   const [sortField, setSortField] = useState<TaskSortField | undefined>(
     "priority",
@@ -203,14 +201,6 @@ export default function ProjectDetailPage({
         taskId={selectedTaskId}
         open={taskDetailOpen}
         onClose={closeTaskDetail}
-      />
-
-      {/* Quick Capture with project pre-set */}
-      <QuickCaptureDialog
-        open={quickCaptureOpen}
-        onOpenChange={(open) => {
-          if (!open) toggleQuickCapture();
-        }}
       />
 
       {/* Edit Dialog */}

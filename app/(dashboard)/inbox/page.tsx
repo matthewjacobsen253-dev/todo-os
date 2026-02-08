@@ -7,7 +7,6 @@ import {
   TaskList,
   TaskFiltersBar,
   TaskDetailSidebar,
-  QuickCaptureDialog,
 } from "@/components/tasks";
 import { useTasksWithSync } from "@/hooks/useTasks";
 import { useProjectsWithSync } from "@/hooks/useProjects";
@@ -27,7 +26,7 @@ export default function InboxPage() {
   } = useTasksWithSync();
 
   const { projects } = useProjectsWithSync();
-  const { taskDetailOpen, selectedTaskId, quickCaptureOpen } = useUI();
+  const { taskDetailOpen, selectedTaskId } = useUI();
   const { openTaskDetail, closeTaskDetail, toggleQuickCapture } =
     useUIActions();
 
@@ -127,14 +126,6 @@ export default function InboxPage() {
         taskId={selectedTaskId}
         open={taskDetailOpen}
         onClose={closeTaskDetail}
-      />
-
-      {/* Quick Capture Dialog */}
-      <QuickCaptureDialog
-        open={quickCaptureOpen}
-        onOpenChange={(open) => {
-          if (!open) toggleQuickCapture();
-        }}
       />
     </div>
   );
