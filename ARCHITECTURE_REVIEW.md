@@ -495,17 +495,20 @@ const admin = createAdminClient();
 
 ## Summary Table
 
-| Issue                          | Severity | Status | Effort |
-| ------------------------------ | -------- | ------ | ------ |
-| Admin client bypasses RLS      | HIGH     | TODO   | 4-6h   |
-| Missing workspace verification | MEDIUM   | TODO   | 2-3h   |
-| N+1 query in projects          | MEDIUM   | TODO   | 1-2h   |
-| Missing DialogTitle (a11y)     | MEDIUM   | TODO   | 1h     |
-| `any` type in tutorial         | LOW      | FIXED  | 5min   |
-| Notification system stubbed    | LOW      | TODO   | 4-6h   |
-| Optimistic updates incomplete  | LOW      | TODO   | 2-3h   |
-| Duplicate hook logic           | LOW      | TODO   | 1h     |
-| No client-side rate limiting   | LOW      | TODO   | 1h     |
+| Issue                          | Severity | Status  | Effort |
+| ------------------------------ | -------- | ------- | ------ |
+| Admin client bypasses RLS      | HIGH     | PARTIAL | 4-6h   |
+| Missing workspace verification | MEDIUM   | PARTIAL | 2-3h   |
+
+**Update 2026-02-07:** Created `lib/auth/workspace-guard.ts` and applied to critical routes
+(/api/tasks, /api/projects, /api/briefing). Remaining routes still need the guard.
+| N+1 query in projects | MEDIUM | TODO | 1-2h |
+| Missing DialogTitle (a11y) | MEDIUM | TODO | 1h |
+| `any` type in tutorial | LOW | FIXED | 5min |
+| Notification system stubbed | LOW | TODO | 4-6h |
+| Optimistic updates incomplete | LOW | TODO | 2-3h |
+| Duplicate hook logic | LOW | TODO | 1h |
+| No client-side rate limiting | LOW | TODO | 1h |
 
 ---
 
