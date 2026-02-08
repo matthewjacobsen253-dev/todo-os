@@ -100,7 +100,48 @@ Sprint 3: Bug Fixes (In Progress)
 - [x] pnpm test:run passes (211/211 tests)
 - [x] Committed: 829f8b1
 
-Next Steps (Sprint 3 continued):
+Sprint 4: Product Improvements (Complete)
+- [x] Linear-style Keyboard Shortcuts
+      - J/K: Navigate task list up/down
+      - X: Complete selected task
+      - E: Edit selected task
+      - F: Toggle Focus Mode
+      - ?: Show keyboard shortcuts help overlay
+      - G+I/T/P/B/S: Go-to navigation (Inbox, Today, Projects, Briefing, Settings)
+      - Cmd+1/2/3: Switch between workspaces
+      - Enhanced useKeyboardShortcuts.ts with task navigation and actions
+      - Created components/layout/keyboard-hints.tsx (modal + badge)
+- [x] Focus Mode
+      - Shows top 3 priority tasks in distraction-free UI
+      - Big, beautiful task cards with progress indicator
+      - Complete one, next slides in with animation
+      - X key to complete current task
+      - Escape to exit
+      - Created components/tasks/focus-mode.tsx
+      - Added Focus Mode button to header (Target icon)
+- [x] Quick Filters Bar
+      - Horizontal filter bar above task list in Inbox
+      - Today | Overdue | High Priority | All filters
+      - Shows task counts for each filter
+      - One-click filtering
+      - Created components/tasks/quick-filters-bar.tsx
+      - Updated app/(dashboard)/inbox/page.tsx
+- [x] Visual Polish
+      - Added CSS animations (fade-in, bounce-subtle)
+      - Smooth transitions on task completion
+      - Keyboard hints badge with auto-hide
+      - Updated app/globals.css
+- [x] Accessibility Improvements
+      - Fixed checkbox aria-labels for completed tasks
+      - Added keyboard navigation to task lists (arrow keys, Home, End)
+      - Added proper list/listitem roles
+      - Added aria-live regions for screen reader announcements
+      - Added DialogDescription to all dialogs
+- [x] pnpm tsc --noEmit passes (0 errors)
+- [x] pnpm lint passes (0 errors)
+- [x] pnpm test:run passes (251/251 tests)
+
+Next Steps:
 - [ ] Review Queue for auto-extracted tasks
 - [ ] Daily Briefing generation and display
 - [ ] Drag-and-drop task reordering
