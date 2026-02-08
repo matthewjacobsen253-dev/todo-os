@@ -17,6 +17,7 @@ import { useTasksWithSync } from "@/hooks/useTasks";
 import { useProjectsWithSync } from "@/hooks/useProjects";
 import { useUI, useUIActions } from "@/store";
 import { sortTasks } from "@/lib/utils";
+import { ProgressStatsCompact } from "@/components/dashboard/progress-stats";
 import type { TaskSortField, SortDirection, TaskGroupBy } from "@/types";
 
 export default function InboxPage() {
@@ -87,6 +88,9 @@ export default function InboxPage() {
           New Task
         </Button>
       </div>
+
+      {/* Progress Stats */}
+      <ProgressStatsCompact />
 
       {/* Quick Filters */}
       <QuickFiltersBar

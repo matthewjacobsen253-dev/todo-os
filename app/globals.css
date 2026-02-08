@@ -105,3 +105,54 @@
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* Things 3 style checkbox animations */
+@keyframes check-bounce {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.2);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  75% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes checkmark-stroke {
+  0% {
+    stroke-dashoffset: 24;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+.animate-check-bounce {
+  animation: check-bounce 0.4s ease-out;
+}
+
+.animate-checkmark-stroke {
+  animation: checkmark-stroke 0.3s ease-out forwards;
+}
+
+.animate-ripple {
+  animation: ripple 0.4s ease-out forwards;
+}
