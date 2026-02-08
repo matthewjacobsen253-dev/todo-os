@@ -4,9 +4,7 @@ import { immer } from "zustand/middleware/immer";
 import type {
   Task,
   TaskFilters,
-  Workspace,
   WorkspaceWithRole,
-  WorkspaceRole,
   Briefing,
   BriefingPreference,
   Notification,

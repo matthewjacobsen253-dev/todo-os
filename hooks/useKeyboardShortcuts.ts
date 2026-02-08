@@ -9,7 +9,7 @@ import { useUIActions } from "@/store";
 /**
  * Keyboard shortcuts configuration
  */
-interface KeyboardShortcut {
+interface _KeyboardShortcut {
   key: string;
   metaKey?: boolean;
   ctrlKey?: boolean;

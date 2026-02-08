@@ -211,7 +211,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
             </div>
           ) : (
             <div className="divide-y divide-border">
-              {localNotifications.map((notification, idx) => (
+              {localNotifications.map((notification, _idx) => (
                 <button
                   key={notification.id}
                   onClick={() => handleNotificationClick(notification)}

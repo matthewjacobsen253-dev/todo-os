@@ -5,7 +5,7 @@
 
 import { useEffect, useCallback } from "react";
 import { useCurrentWorkspace, useWorkspaceActions, useStore } from "@/store";
-import type { CreateWorkspaceInput, WorkspaceWithRole } from "@/types";
+import type { CreateWorkspaceInput } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 
 /**
@@ -14,8 +14,11 @@ import { createClient } from "@/lib/supabase/client";
  */
 export const useWorkspace = () => {
   const currentWorkspace = useCurrentWorkspace();
-  const { setCurrentWorkspace, fetchWorkspaces, createWorkspace } =
-    useWorkspaceActions();
+  const {
+    setCurrentWorkspace,
+    fetchWorkspaces,
+    createWorkspace: _createWorkspace,
+  } = useWorkspaceActions();
   const workspaceLoading = useStore((state) => state.workspaceLoading);
   const workspaceError = useStore((state) => state.workspaceError);
   const workspaces = useStore((state) => state.workspaces);

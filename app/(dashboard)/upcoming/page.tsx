@@ -83,7 +83,12 @@ function DaySection({
 }
 
 export default function UpcomingPage() {
-  const { tasks, loading, changeTaskStatus, deleteTask } = useTasksWithSync();
+  const {
+    tasks,
+    loading,
+    changeTaskStatus,
+    deleteTask: _deleteTask,
+  } = useTasksWithSync();
   const { projects } = useProjectsWithSync();
   const { taskDetailOpen, selectedTaskId } = useUI();
   const { openTaskDetail, closeTaskDetail } = useUIActions();
