@@ -55,6 +55,9 @@ interface UIState {
   quickCaptureOpen: boolean;
   theme: "light" | "dark" | "system";
   commandPaletteOpen: boolean;
+  focusModeOpen: boolean;
+  keyboardHintsOpen: boolean;
+  selectedTaskIndex: number;
 
   toggleSidebar: () => void;
   openTaskDetail: (taskId: string) => void;
@@ -62,6 +65,10 @@ interface UIState {
   toggleQuickCapture: () => void;
   setTheme: (theme: "light" | "dark" | "system") => void;
   toggleCommandPalette: () => void;
+  toggleFocusMode: () => void;
+  toggleKeyboardHints: () => void;
+  setSelectedTaskIndex: (index: number) => void;
+  navigateTaskList: (direction: "up" | "down", maxIndex: number) => void;
 }
 
 interface BriefingState {
@@ -162,6 +169,10 @@ export const useStore = create<AppState>()(
     setCurrentWorkspace: (workspace: WorkspaceWithRole) => {
       set((state) => {
         state.currentWorkspace = workspace;
+        // Clear tasks when switching workspaces to prevent cross-workspace data leakage
+        state.tasks = [];
+        state.filteredTasks = [];
+        state.projects = [];
       });
       // Persist workspace selection to localStorage for cross-navigation persistence
       if (typeof window !== "undefined") {
@@ -305,10 +316,7 @@ export const useStore = create<AppState>()(
       const data = json.data as Task;
       set((state) => {
         state.tasks.push(data);
-        state.filteredTasks = filterTasks(
-          [...(state.tasks as Task[]), data],
-          state.filters,
-        );
+        state.filteredTasks = filterTasks(state.tasks as Task[], state.filters);
       });
 
       return data;
@@ -457,6 +465,9 @@ export const useStore = create<AppState>()(
     quickCaptureOpen: false,
     theme: "system",
     commandPaletteOpen: false,
+    focusModeOpen: false,
+    keyboardHintsOpen: false,
+    selectedTaskIndex: -1,
 
     toggleSidebar: () => {
       set((state) => {
@@ -496,6 +507,37 @@ export const useStore = create<AppState>()(
     toggleCommandPalette: () => {
       set((state) => {
         state.commandPaletteOpen = !state.commandPaletteOpen;
+      });
+    },
+
+    toggleFocusMode: () => {
+      set((state) => {
+        state.focusModeOpen = !state.focusModeOpen;
+      });
+    },
+
+    toggleKeyboardHints: () => {
+      set((state) => {
+        state.keyboardHintsOpen = !state.keyboardHintsOpen;
+      });
+    },
+
+    setSelectedTaskIndex: (index: number) => {
+      set((state) => {
+        state.selectedTaskIndex = index;
+      });
+    },
+
+    navigateTaskList: (direction: "up" | "down", maxIndex: number) => {
+      set((state) => {
+        if (direction === "down") {
+          state.selectedTaskIndex = Math.min(
+            state.selectedTaskIndex + 1,
+            maxIndex,
+          );
+        } else {
+          state.selectedTaskIndex = Math.max(state.selectedTaskIndex - 1, 0);
+        }
       });
     },
 
@@ -891,6 +933,9 @@ export const useUI = () =>
       quickCaptureOpen: state.quickCaptureOpen,
       theme: state.theme,
       commandPaletteOpen: state.commandPaletteOpen,
+      focusModeOpen: state.focusModeOpen,
+      keyboardHintsOpen: state.keyboardHintsOpen,
+      selectedTaskIndex: state.selectedTaskIndex,
     })),
   );
 
@@ -903,6 +948,10 @@ export const useUIActions = () =>
       toggleQuickCapture: state.toggleQuickCapture,
       setTheme: state.setTheme,
       toggleCommandPalette: state.toggleCommandPalette,
+      toggleFocusMode: state.toggleFocusMode,
+      toggleKeyboardHints: state.toggleKeyboardHints,
+      setSelectedTaskIndex: state.setSelectedTaskIndex,
+      navigateTaskList: state.navigateTaskList,
     })),
   );
 
